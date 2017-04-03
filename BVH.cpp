@@ -5,9 +5,11 @@
 #include "Joint.h"
 #include <fstream>
 #include <vecmath.h>
-#include <vector>
 #include <string>
 #include <sstream>
+#include <iostream>
+
+typedef BVH::MOTION MOTION;
 
 
 std::string trim(const std::string& str)
@@ -40,11 +42,16 @@ void BVH::load(const std::string& filename)
 
 		file.close();
 	}
+
+	bvhToVertices(rootJoint, skeletalVertices, skeletalIndices);
+
+	std::cout << "loaded finished" << std::endl;
 }
 
 void BVH::loadHierarchy(std::istream& stream)
 {
 	std::string tmp;
+	std::cout << " loading heirarchy" << std::endl;
 
 	while (stream.good())
 	{
@@ -55,10 +62,15 @@ void BVH::loadHierarchy(std::istream& stream)
 		else if (trim(tmp) == "MOTION")
 			loadMotion(stream);
 	}
+
+	std::cout << " finish heirarchy" << std::endl;
+
 }
 
 Joint* BVH::loadJoint(std::istream& stream, Joint* parent) //default value of parent == NULL
 {
+	std::cout << " loading Joint" << std::endl;
+
 	Joint* joint = new Joint;
 	joint->parent = parent;
 
@@ -79,7 +91,7 @@ Joint* BVH::loadJoint(std::istream& stream, Joint* parent) //default value of pa
 	{
 		stream >> tmp;
 		tmp = trim(tmp);
-
+		std::cout << tmp << std::endl;
 		// loading channels
 		char c = tmp.at(0);
 		if (c == 'X' || c == 'Y' || c == 'Z')
@@ -166,11 +178,14 @@ Joint* BVH::loadJoint(std::istream& stream, Joint* parent) //default value of pa
 			return joint;
 
 	}
+
+	std::cout << " finish Joint" << std::endl;
 }
 
 void BVH::loadMotion(std::istream& stream)
 {
 	std::string tmp;
+	std::cout << " loading Motion" << std::endl;
 
 	while (stream.good())
 	{
@@ -212,6 +227,110 @@ void BVH::loadMotion(std::istream& stream)
 			}
 		}
 	}
+	std::cout << " finish Motion" << std::endl;
+
+}
+
+/**
+Calculates Joint's local transformation matrix for
+specified frame starting index
+*/
+static void moveJoint(Joint* joint, MOTION* motionData, int frame_starts_index)
+{
+	// we'll need index of motion data's array with start of this specific joint
+	int start_index = frame_starts_index + joint->channel_start;
+
+	// translate indetity matrix to this joint's offset parameters
+	joint->transform = Matrix4f::translation(joint->offset.x,
+		joint->offset.y,
+		joint->offset.z);
+		
+
+	// here we transform joint's local matrix with each specified channel's values
+	// which are read from motion data
+	for (int i = 0; i < joint->num_channels; i++)
+	{
+		// channel alias
+		const short& channel = joint->channels_order[i];
+
+		// extract value from motion data
+		float value = motionData->data[start_index + i];
+
+		if (channel & Xposition)
+		{
+			joint->transform = joint->transform.translation(value , 0 , 0);
+		}
+		if (channel & Yposition)
+		{
+			joint->transform = joint->transform.translation(0, value, 0);
+		}
+		if (channel & Zposition)
+		{
+			joint->transform = joint->transform.translation(0, 0, value);
+		}
+
+		if (channel & Xrotation)
+		{
+			joint->transform = joint->transform.rotateX(value);
+		}
+		if (channel & Yrotation)
+		{
+			joint->transform = joint->transform.rotateY(value);
+		}
+		if (channel & Zrotation)
+		{
+			joint->transform = joint->transform.rotateZ(value);
+		}
+	}
+
+	// then we apply parent's local transfomation matrix to this joint's LTM (local tr. mtx. :)
+	if (joint->parent != NULL)
+		joint->transform = joint->parent->transform * joint->transform;
+
+	// when we have calculated parent's matrix do the same to all children
+	for (auto& child : joint->children)
+		moveJoint(child, motionData, frame_starts_index);
+}
+
+void BVH::moveTo(unsigned frame)
+{
+	// we calculate motion data's array start index for a frame
+	unsigned start_index = frame * motionData.num_motion_channels;
+
+	// recursively transform skeleton
+	moveJoint(rootJoint, &motionData, start_index);
+}
+
+//for drawing the skeleton
+
+void BVH::drawSkeleton(bool drawSkeleton , int frame = 1) {
+	std::cout << "drawing skeleton" << std::endl;
+
+	moveTo(frame);
+	//bvhToVertices already loaded
+
+
+
+}
+
+void BVH::bvhToVertices(Joint* joint, std::vector<Vector4f>& vertices, std::vector<int>&   indices, int parentIndex = 0) {
+	// vertex from current joint is in 4-th ROW (column-major ordering)
+	Vector4f translatedVertex = joint->transform.getCol(4);
+
+	// pushing current 
+	vertices.push_back(translatedVertex);
+
+	// avoid putting root twice
+	int myindex = vertices.size() - 1;
+	if (parentIndex != myindex)
+	{
+		indices.push_back(parentIndex);
+		indices.push_back(myindex);
+	}
+
+	// foreach child same thing
+	for (auto& child : joint->children)
+		bvhToVertices(child, vertices, indices, myindex);
 }
 
 #endif

@@ -18,6 +18,7 @@
 #include <vecmath.h>
 #include "camera.h"
 #include <string>
+#include <BVH.h>
 
 //#include "modelerapp.h"
 //#include "ModelerView.h"
@@ -25,6 +26,9 @@
 using namespace std;
 
 namespace {
+
+	//BVH IMPLEMENTATIONS
+	BVH bvh;
 	
 	Camera camera; // This is the camera
 
@@ -232,12 +236,12 @@ namespace {
 
 int main( int argc, char* argv[] )
 {
-	//if( argc < 2 )
-	//{
-	//	cout << "Usage: " << argv[ 0 ] << " PREFIX" << endl;
-	//	cout << "For example, if you're trying to load data/cheb.skel, data/cheb.obj, and data/cheb.attach, run with: " << argv[ 0 ] << " data/cheb" << endl;
-	//	return -1;
-	//}
+	if( argc < 2 )
+	{
+		cout << "Usage: " << argv[ 0 ] << " PREFIX" << endl;
+		cout <<  "Please input a .bhv file to load" << endl;
+		return -1;
+	}
 
 	glutInit(&argc, argv);
 
@@ -258,8 +262,9 @@ int main( int argc, char* argv[] )
 	// Initialize OpenGL parameters.
 	initRendering();
 
-	// Setup particle system
+	// Setup BVH
 	//initSystem(argc, argv);
+	bvh.load(argv[1]);
 
 	// Set up callback functions for key presses
 	glutKeyboardFunc(keyboardFunc); // Handles "normal" ascii symbols

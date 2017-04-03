@@ -1,6 +1,7 @@
 #include "Mesh.h"
 #include <iterator>
 #include <vector>
+#include "Joint.h"
 
 using namespace std;
 
@@ -126,5 +127,6 @@ void Mesh::loadAttachments(const char* filename, int numJoints)
 	cout << "attachments: " << attachments.size() << endl;
 	cout << "weights: " << attachments[0].size() << endl;
 }
+
 
 

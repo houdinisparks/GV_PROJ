@@ -94,6 +94,7 @@
     <ClCompile Include="ModelerView.cpp" />
     <ClCompile Include="Movement.cpp" />
     <ClCompile Include="SkeletalModel.cpp" />
+    <ClCompile Include="SkeletalModel_BVH.cpp" />
     <ClCompile Include="vecmath\src\Matrix2f.cpp" />
     <ClCompile Include="vecmath\src\Matrix3f.cpp" />
     <ClCompile Include="vecmath\src\Matrix4f.cpp" />
@@ -114,6 +115,7 @@
     <ClInclude Include="ModelerView.h" />
     <ClInclude Include="Movement.h" />
     <ClInclude Include="SkeletalModel.h" />
+    <ClInclude Include="SkeletalModel_BVH.h" />
     <ClInclude Include="tuple.h" />
     <ClInclude Include="vecmath\include\Matrix2f.h" />
     <ClInclude Include="vecmath\include\Matrix3f.h" />

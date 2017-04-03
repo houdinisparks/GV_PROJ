@@ -15,9 +15,11 @@
 #include "tuple.h"
 
 typedef tuple< unsigned, 3 > Tuple3u;
+class BVH;
 
 struct Mesh
 {
+	
 	// list of vertices from the OBJ file
 	// in the "bind pose"
 	std::vector< Vector3f > bindVertices;
@@ -43,6 +45,12 @@ struct Mesh
 	// 2.2. Implement this method to load the per-vertex attachment weights
 	// this method should update m_mesh.attachments
 	void loadAttachments( const char* filename, int numJoints );
+
+
+
+
+	
+
 };
 
 #endif
