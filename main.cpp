@@ -29,6 +29,7 @@ namespace {
 
 	//BVH IMPLEMENTATIONS
 	BVH bvh;
+	int cur_frame = 1;
 	
 	Camera camera; // This is the camera
 
@@ -164,8 +165,10 @@ namespace {
 	}
 
 	// This function is responsible for displaying the object.
+	// it is called everytime whenever the window needs redrawing
 	void drawScene(void)
 	{
+		cout << " drawing scene" << endl;
 		// Clear the rendering window
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -183,6 +186,8 @@ namespace {
 		//// THIS IS WHERE THE DRAW CODE GOES.
 
 		//drawSystem();
+		//x	cout << "bvh1";
+		bvh.drawSkeleton(true, 1);
 
 		// This draws the coordinate axes when you're rotating, to
 		// keep yourself oriented.
@@ -199,7 +204,7 @@ namespace {
 			glDisable(GL_LIGHTING);
 			glLineWidth(3);
 			glPushMatrix();
-			glScaled(5.0, 5.0, 5.0);
+			glScaled(50.0, 50.0, 50.0);
 			glBegin(GL_LINES);
 			glColor4f(1, 0.5, 0.5, 1); glVertex3f(0, 0, 0); glVertex3f(1, 0, 0);
 			glColor4f(0.5, 1, 0.5, 1); glVertex3f(0, 0, 0); glVertex3f(0, 1, 0);
@@ -223,7 +228,25 @@ namespace {
 
 	void timerFunc(int t)
 	{
-		//stepSystem();
+		//cout << cur_frame << endl;
+		//bvh.drawSkeleton(true, cur_frame++);
+
+		//// Clear the rendering window
+		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		//glMatrixMode(GL_MODELVIEW);
+		//glLoadIdentity();
+
+		//// Light color (RGBA)
+		//GLfloat Lt0diff[] = { 1.0,1.0,1.0,1.0 };
+		//GLfloat Lt0pos[] = { 3.0,3.0,5.0,1.0 };
+		//glLightfv(GL_LIGHT0, GL_DIFFUSE, Lt0diff);
+		//glLightfv(GL_LIGHT0, GL_POSITION, Lt0pos);
+
+		//glLoadMatrixf(camera.viewMatrix());
+
+
+		//glutSwapBuffers();
 
 		glutPostRedisplay();
 
@@ -254,16 +277,16 @@ int main( int argc, char* argv[] )
 
 	camera.SetDimensions(600, 600);
 
-	camera.SetDistance(10);
+	camera.SetDistance(100);
 	camera.SetCenter(Vector3f::ZERO);
 
 	glutCreateWindow("GV PROJECT");
 
 	// Initialize OpenGL parameters.
-	initRendering();
+	//initRendering();
 
 	// Setup BVH
-	//initSystem(argc, argv);
+	//initSystem(argc, argv);gv	
 	bvh.load(argv[1]);
 
 	// Set up callback functions for key presses
@@ -280,9 +303,8 @@ int main( int argc, char* argv[] )
 	// Call this whenever window needs redrawing
 	glutDisplayFunc(drawScene);
 
-	// Trigger timerFunc every 20 msec
-	glutTimerFunc(20, timerFunc, 20);
-
+	// Trigger timerFunc every 8.33 msec / 1 frame every 8.33ms
+	glutTimerFunc(500, timerFunc, 500);
 
 	// Start the main loop.  glutMainLoop never returns.
 	glutMainLoop();

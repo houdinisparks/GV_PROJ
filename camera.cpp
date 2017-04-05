@@ -6,7 +6,7 @@
 #ifndef M_PI
 #define M_PI 3.14159265358979f
 #endif
-
+ 
 using namespace std;
 
 Camera::Camera()
