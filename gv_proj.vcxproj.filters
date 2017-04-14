@@ -60,22 +60,10 @@
     <ClCompile Include="vecmath\src\Vector3f.cpp">
       <Filter>Source Files\vecmath</Filter>
     </ClCompile>
-    <ClCompile Include="modelerapp.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="modelerui.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ModelerView.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="SkeletalModel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="BVH.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SkeletalModel_BVH.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -119,12 +107,6 @@
     <ClInclude Include="vecmath\include\Quat4f.h">
       <Filter>Header Files\vecmath</Filter>
     </ClInclude>
-    <ClInclude Include="modelerapp.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="modelerui.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="ModelerView.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -134,13 +116,7 @@
     <ClInclude Include="tuple.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Movement.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="BVH.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SkeletalModel_BVH.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Logger.h">
