@@ -29,7 +29,7 @@ namespace {
 
 	//BVH IMPLEMENTATIONS
 	BVH bvh;
-	int cur_frame = 1;
+	int cur_frame = 0;
 	
 	Camera camera; // This is the camera
 
@@ -168,7 +168,7 @@ namespace {
 	// it is called everytime whenever the window needs redrawing
 	void drawScene(void)
 	{
-		cout << " drawing scene" << endl;
+		//cout << " drawing scene" << endl;
 		// Clear the rendering window
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -187,7 +187,7 @@ namespace {
 
 		//drawSystem();
 		//x	cout << "bvh1";
-		bvh.drawSkeleton(true, 1);
+		
 
 		// This draws the coordinate axes when you're rotating, to
 		// keep yourself oriented.
@@ -220,6 +220,10 @@ namespace {
 
 			glPopAttrib();
 			glPopMatrix();
+			bvh.drawSkeleton(true, cur_frame);
+		}
+		else {
+			bvh.drawSkeleton(true, cur_frame++);
 		}
 
 		// Dump the image to the screen.
@@ -277,7 +281,7 @@ int main( int argc, char* argv[] )
 
 	camera.SetDimensions(600, 600);
 
-	camera.SetDistance(100);
+	camera.SetDistance(300);
 	camera.SetCenter(Vector3f::ZERO);
 
 	glutCreateWindow("GV PROJECT");
@@ -288,6 +292,7 @@ int main( int argc, char* argv[] )
 	// Setup BVH
 	//initSystem(argc, argv);gv	
 	bvh.load(argv[1]);
+	bvh.testOutput();
 
 	// Set up callback functions for key presses
 	glutKeyboardFunc(keyboardFunc); // Handles "normal" ascii symbols
@@ -304,7 +309,7 @@ int main( int argc, char* argv[] )
 	glutDisplayFunc(drawScene);
 
 	// Trigger timerFunc every 8.33 msec / 1 frame every 8.33ms
-	glutTimerFunc(500, timerFunc, 500);
+	glutTimerFunc(8.33, timerFunc, 8.33);
 
 	// Start the main loop.  glutMainLoop never returns.
 	glutMainLoop();

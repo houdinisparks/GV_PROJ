@@ -92,7 +92,6 @@
     <ClCompile Include="modelerapp.cpp" />
     <ClCompile Include="modelerui.cpp" />
     <ClCompile Include="ModelerView.cpp" />
-    <ClCompile Include="Movement.cpp" />
     <ClCompile Include="SkeletalModel.cpp" />
     <ClCompile Include="SkeletalModel_BVH.cpp" />
     <ClCompile Include="vecmath\src\Matrix2f.cpp" />
@@ -108,6 +107,7 @@
     <ClInclude Include="BVH.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="Joint.h" />
+    <ClInclude Include="Logger.h" />
     <ClInclude Include="MatrixStack.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="modelerapp.h" />

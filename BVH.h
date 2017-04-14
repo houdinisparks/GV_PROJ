@@ -1,7 +1,8 @@
 #pragma once
 
 #include "Joint.h"
-#include <ppltasks.h>
+#include "Logger.h"
+
 
 class BVH
 {
@@ -25,11 +26,22 @@ public:
 		unsigned* joint_channel_offsets;      // number of channels from beggining of hierarchy for i-th joint
 	} MOTION;
 
-	BVH() {};
-	~BVH() {};
+	typedef struct
+	{
+		unsigned int num_hierarchies;
+		unsigned int num_total_joints;
+		unsigned int num_motion_channels = 0;
+		unsigned int num_frames;
 
+	} BVH_STATISTICS;
+
+	BVH();
+	~BVH() {};
+	
 	// loading 
 	void load(const std::string& filename);
+
+	void printJoint(const Joint* const joint) const;
 
 	void moveJoint(Joint * joint, MOTION * motionData, int frame_starts_index);
 
@@ -42,6 +54,7 @@ public:
 
 	// Drawing the Skeleton
 	void bvhToVertices(Joint * joint, std::vector<Vector4f>& vertices, std::vector<int>& indices, int parentIndex);
+	void testOutput() const;
 	void drawSkeleton( bool drawSkeleton, int frame );
 	
 

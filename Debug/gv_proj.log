@@ -1,3 +1,7 @@
 ﻿C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V140\Microsoft.CppBuild.targets(392,5): warning MSB8028: The intermediate directory (Debug\) contains files shared from another project (a2.vcxproj).  This can lead to incorrect clean and rebuild behavior.
+  main.cpp
+main.cpp(90): warning C4060: switch statement contains no 'case' or 'default' labels
+main.cpp(312): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
+main.cpp(312): warning C4244: 'argument': conversion from 'double' to 'unsigned int', possible loss of data
   gv_proj.vcxproj -> C:\Users\yanyee\OneDrive\Documents\SUTD\subjects\ISTD Term 7\Graphics and Visualisation\project\gv_proj\Debug\gv_proj.exe
   gv_proj.vcxproj -> C:\Users\yanyee\OneDrive\Documents\SUTD\subjects\ISTD Term 7\Graphics and Visualisation\project\gv_proj\Debug\gv_proj.pdb (Full PDB)
