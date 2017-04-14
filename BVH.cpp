@@ -13,6 +13,8 @@
 #include <cctype>
 #include <future>
 
+
+#define M_PI           3.14159265358979323846
 #ifdef WIN32
 #include "GL/freeglut.h"
 #else
@@ -21,6 +23,11 @@
 
 int count_joint = 0;
 typedef BVH::MOTION MOTION;
+BVH::BVH()
+	: rootJoint(NULL)
+{
+	motionData.data = 0;
+}
 
 // trim from start
 static inline std::string &ltrim(std::string &s) {
@@ -38,11 +45,16 @@ static inline std::string &rtrim(std::string &s) {
 static inline std::string &trim(std::string &s) {
 	return ltrim(rtrim(s));
 }
+
+float convertToRadians(float degrees) {
+	return (M_PI * degrees) / 180.0f;
+
+}
 void BVH::load(const std::string& filename)
 {
 	std::fstream file;
 	char buffer[8192];
-	file.rdbuf()->pubsetbuf(buffer, 8192);
+	//file.rdbuf()->pubsetbuf(buffer, 8192);
 
 	file.open(filename.c_str(), std::ios_base::in);
 
@@ -78,25 +90,20 @@ void BVH::loadHierarchy(std::istream& stream)
 	std::string tmp;
 	std::cout << " loading heirarchy" << std::endl;
 
+
 	while (stream.good())
 	{
 		stream >> tmp;
+		klog.l("hier") << tmp;
 
-		if (trim(tmp) == "ROOT") {
-
-			/*auto future = std::async(std::launch::async, &BVH::loadJoint ,*this,stream);
-			rootJoint = future.get();*/
+		if (trim(tmp) == "ROOT")
 			rootJoint = loadJoint(stream);
-			//std::cout << " 1" << std::endl;
-			std::cout << count_joint;
-		}
-		else if (trim(tmp) == "MOTION") {
-			//std::cout << " 2" << std::endl;
+		else if (trim(tmp) == "MOTION")
 			loadMotion(stream);
-		}
 	}
+	
 
-	std::cout << " finish heirarchy" << std::endl;
+	//std::cout << " finish heirarchy" << std::endl;
 
 }
 
@@ -120,19 +127,12 @@ Joint* BVH::loadJoint(std::istream& stream, Joint* parent) //default value of pa
 	static int _channel_start = 0;
 	unsigned channel_order_index = 0;
 	try {
-		std::string line;
-		while (stream >> tmp)
+		while (stream.good())
 		{
-			////std::cout << "1" << std::endl;
-
-			//stream >> tmp;
-			//std::cout << "2" << std::endl;
-
+			stream >> tmp;
 			tmp = trim(tmp);
-			stripUnicode(tmp);
-			//std::cout << "3" << std::endl;
-			//std::cout << tmp << std::endl;
-			// loading channels
+
+			// setting channels
 			char c = tmp.at(0);
 			if (c == 'X' || c == 'Y' || c == 'Z')
 			{
@@ -163,22 +163,12 @@ Joint* BVH::loadJoint(std::istream& stream, Joint* parent) //default value of pa
 				}
 			}
 
-			if (strcmp("OFFSET" , tmp.c_str()) == 0)
+
+			if (tmp == "OFFSET")
 			{
-				// reading an offset values
 				stream >> joint->offset.x
 					>> joint->offset.y
 					>> joint->offset.z;
-
-				std::cout << joint->offset.x << " " <<
-					joint->offset.y << " " << joint->offset.z <<" " << std::endl;
-
-				
-
-				//>> joint->offset.y
-				//>> joint->offset.z;
-
-
 			}
 			else if (tmp == "CHANNELS")
 			{
@@ -208,24 +198,29 @@ Joint* BVH::loadJoint(std::istream& stream, Joint* parent) //default value of pa
 			}
 			else if (tmp == "End")
 			{
-				// loading End Site joint
-				stream >> tmp >> tmp; // Site {
+				// End Site {
+	
+				stream >> tmp >> tmp;
 
 				Joint* tmp_joint = new Joint;
-				count_joint += 1;
+
 				tmp_joint->parent = joint;
 				tmp_joint->num_channels = 0;
 				tmp_joint->name = "EndSite";
 				joint->children.push_back(tmp_joint);
-				std::cout << tmp << std::endl;
-				stream >> tmp;
-				std::cout << tmp << std::endl;
-				if (tmp == "OFFSET")
-					stream >> tmp_joint->offset.x
-					>> tmp_joint->offset.y
-					>> tmp_joint->offset.z;
 
-				stream >> tmp; // }
+				//            allJoints.insert(tmp_joint);
+
+				stream >> tmp;
+				if (tmp == "OFFSET") {
+	
+					stream >> tmp_joint->offset.x
+						>> tmp_joint->offset.y
+						>> tmp_joint->offset.z;
+				}
+
+				// ucitavanje }
+				stream >> tmp;
 			}
 
 			else if (tmp == "}") {
@@ -245,7 +240,7 @@ Joint* BVH::loadJoint(std::istream& stream, Joint* parent) //default value of pa
 		}
 
 	
-	std::cout << " finish Joint" << std::endl;
+	//std::cout << " finish Joint" << std::endl;
 
 }
 
@@ -254,62 +249,42 @@ void BVH::loadMotion(std::istream& stream)
 {
 	std::string tmp;
 	std::cout << " loading Motion" << std::endl;
-
 	while (stream.good())
 	{
 		stream >> tmp;
-		//std::cout << tmp << std::endl;
 
 		if (trim(tmp) == "Frames:")
 		{
-			// loading frame number
 			stream >> motionData.num_frames;
 		}
 		else if (trim(tmp) == "Frame")
 		{
-			std::cout << "2" << std::endl;
-
-			// loading frame time
 			float frame_time;
 			stream >> tmp >> frame_time;
 
 			int num_frames = motionData.num_frames;
 			int num_channels = motionData.num_motion_channels;
 
-			// creating motion data array
-			motionData.data = new float[num_frames * num_channels];
-			std::cout << "frame time: " << frame_time;
-			std::cout << " no. of frames: " << num_frames;
-			std::cout << " no. of channels: " << num_channels;
+			klog.l() << "num frames:" << num_frames;
+			klog.l() << "num channels:" << num_channels;
 
-			// foreach frame read and store floats
+			motionData.data = new float[num_frames * num_channels];
+
 			for (int frame = 0; frame < num_frames; frame++)
 			{
 				for (int channel = 0; channel < num_channels; channel++)
 				{
-					// reading float
 					float x;
 					std::stringstream ss;
 					stream >> tmp;
 					ss << tmp;
 					ss >> x;
 
-					// calculating index for storage
 					int index = frame * num_channels + channel;
 					motionData.data[index] = x;
-					//std::cout << "index: " << index << std::endl;
-
 				}
-
 			}
-
-			std::cout << "size of array: ";
-			std::cout << sizeof(motionData.data) / sizeof(float) << std::endl;
-			std::cout << motionData.data[500] << std::endl;
-			//std::cout << stream.good();
-
 		}
-
 	}
 
 	std::cout << " finish Motion" << std::endl;
@@ -325,7 +300,7 @@ void BVH::moveJoint(Joint* joint, MOTION* motionData, int frame_starts_index)
 	// we'll need index of motion data's array with start of this specific joint
 	int start_index = frame_starts_index + joint->channel_start;
 
-	// translate indetity matrix to this joint's offset parameters
+	// translate indetity matrix to this joint's offset parameters w.r.t parents
 	joint->transform = Matrix4f::translation(joint->offset.x,
 		joint->offset.y,
 		joint->offset.z );
@@ -360,25 +335,27 @@ void BVH::moveJoint(Joint* joint, MOTION* motionData, int frame_starts_index)
 
 		if (channel & Xrotation)
 		{
-			joint->transform = joint->transform * Matrix4f::rotateX(value);
+			joint->transform = joint->transform * Matrix4f::rotateX(convertToRadians(value));
 		}
 		if (channel & Yrotation)
 		{
-			joint->transform = joint->transform * Matrix4f::rotateY(value);
+			joint->transform = joint->transform * Matrix4f::rotateY(convertToRadians(value));
 		}
 		if (channel & Zrotation)
 		{
-			joint->transform = joint->transform * Matrix4f::rotateZ(value);
+			joint->transform = joint->transform * Matrix4f::rotateZ(convertToRadians(value));
 		}
 	}
 
 	// then we apply parent's local transfomation matrix to this joint's LTM (local tr. mtx. :)
-	if (joint->parent != NULL)
+	if (joint->parent != NULL) {
 		joint->transform = joint->parent->transform * joint->transform;
+	}
 
 	// when we have calculated parent's matrix do the same to all children
-	for (auto& child : joint->children)
+	for (auto& child : joint->children) {
 		moveJoint(child, motionData, frame_starts_index);
+	}
 }
 
 void BVH::moveTo(unsigned frame)
@@ -393,7 +370,7 @@ void BVH::moveTo(unsigned frame)
 }
 
 //for drawing the skeleton
-void BVH::drawSkeleton(bool drawSkeleton, int frame = 1) {
+void BVH::drawSkeleton(bool drawSkeleton, int frame = 0) {
 	//std::cout << "drawing skeleton" << std::endl;
 
 	frame = frame % motionData.num_frames;
@@ -413,7 +390,7 @@ void BVH::drawSkeleton(bool drawSkeleton, int frame = 1) {
 		//std::cout << "parent: " ; parent.print();
 		//std::cout << "child: "; child.print();
 
-		glLineWidth(5.0f);
+		glLineWidth(2.0f);
 	
 		glBegin(GL_LINES);
 		glVertex3f(parent.x(), parent.y(), parent.z());
@@ -427,7 +404,7 @@ void BVH::drawSkeleton(bool drawSkeleton, int frame = 1) {
 
 void BVH::bvhToVertices(Joint* joint, std::vector<Vector4f>& vertices, std::vector<int>&   indices, int parentIndex = 0) {
 	// vertex from current joint is in 4-th ROW (column-major ordering)
-	Vector4f translatedVertex = joint->transform.getCol(3);
+	Vector4f translatedVertex = joint->transform.getCol(3); //get the translation of the vertex
 	//joint->transform.getCol(3).print();
 
 	// pushing current 
@@ -442,8 +419,41 @@ void BVH::bvhToVertices(Joint* joint, std::vector<Vector4f>& vertices, std::vect
 	}
 
 	// foreach child same thing
-	for (auto& child : joint->children)
+	for (auto& child : joint->children) {
 		bvhToVertices(child, vertices, indices, myindex);
+	}
+}
+
+void BVH::printJoint(const Joint* const joint) const
+{
+	klog.l("joint") << "print joint" << joint->name << joint->channel_start;
+
+	for (std::vector<Joint*>::const_iterator ct = joint->children.begin();
+		ct != joint->children.end(); ++ct)
+	{
+		Joint* _tmp = *ct;
+
+			printJoint(_tmp);
+	}
+
+}
+
+
+void BVH::testOutput() const
+{
+	if (rootJoint == 0)
+		return;
+
+	klog.l() << "output";
+	printJoint(rootJoint);
+
+	klog.l() << "num frames: " << motionData.num_frames;
+	klog.l() << "num motion channels: " << motionData.num_motion_channels;
+
+	int num_frames = motionData.num_frames;
+	int num_channels = motionData.num_motion_channels;
+
+
 }
 
 #endif
