@@ -1,7 +1,14 @@
 ﻿C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V140\Microsoft.CppBuild.targets(392,5): warning MSB8028: The intermediate directory (Debug\) contains files shared from another project (a2.vcxproj).  This can lead to incorrect clean and rebuild behavior.
-  main.cpp
-main.cpp(90): warning C4060: switch statement contains no 'case' or 'default' labels
-main.cpp(312): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
-main.cpp(312): warning C4244: 'argument': conversion from 'double' to 'unsigned int', possible loss of data
+  SkeletalModel.cpp
+SkeletalModel.cpp(114): warning C4101: 'oor': unreferenced local variable
+SkeletalModel.cpp(399): warning C4018: '<': signed/unsigned mismatch
+SkeletalModel.cpp(405): warning C4018: '<': signed/unsigned mismatch
+  BVH.cpp
+BVH.cpp(50): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
+BVH.cpp(56): warning C4101: 'buffer': unreferenced local variable
+BVH.cpp(315): warning C4018: '<': signed/unsigned mismatch
+BVH.cpp(383): warning C4018: '<': signed/unsigned mismatch
+  Generating Code...
+c:\users\yanyee\onedrive\documents\sutd\subjects\istd term 7\graphics and visualisation\project\gv_proj\bvh.cpp(245): warning C4715: 'BVH::loadJoint': not all control paths return a value
   gv_proj.vcxproj -> C:\Users\yanyee\OneDrive\Documents\SUTD\subjects\ISTD Term 7\Graphics and Visualisation\project\gv_proj\Debug\gv_proj.exe
   gv_proj.vcxproj -> C:\Users\yanyee\OneDrive\Documents\SUTD\subjects\ISTD Term 7\Graphics and Visualisation\project\gv_proj\Debug\gv_proj.pdb (Full PDB)
