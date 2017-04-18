@@ -10,9 +10,9 @@ main.cpp(197): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
 main.cpp(234): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
 main.cpp(274): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
 main.cpp(275): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-main.cpp(280): warning C4305: '+=': truncation from 'double' to 'float'
-main.cpp(336): warning C4060: switch statement contains no 'case' or 'default' labels
-main.cpp(561): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
-main.cpp(561): warning C4244: 'argument': conversion from 'double' to 'unsigned int', possible loss of data
+main.cpp(308): warning C4305: '+=': truncation from 'double' to 'float'
+main.cpp(372): warning C4060: switch statement contains no 'case' or 'default' labels
+main.cpp(624): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
+main.cpp(624): warning C4244: 'argument': conversion from 'double' to 'unsigned int', possible loss of data
   gv_proj.vcxproj -> C:\Users\Loo Yi\Desktop\GV_PROJ\Debug\gv_proj.exe
   gv_proj.vcxproj -> C:\Users\Loo Yi\Desktop\GV_PROJ\Debug\gv_proj.pdb (Full PDB)
