@@ -506,7 +506,7 @@ namespace {
 
 			}
 			else {
-				bvh.drawMesh(true, cur_frame);
+				bvh.drawMesh(true, cur_frame++);
 
 			}
 		}
