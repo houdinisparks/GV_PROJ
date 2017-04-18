@@ -514,6 +514,7 @@ namespace {
                     ground_points[j+100][i+1+100][2] + zoom);
             }
 
+
           }
         glEnd();
 
@@ -575,9 +576,12 @@ namespace {
 		}
 
 		if (particleOn == 1) {
+			//klog.l("drawing") << "drawRain";
 			drawRain();
 		}
 		else if (particleOn == 2) {
+			//klog.l("drawing") << "drawSnow";
+
 			drawSnow();
 		}
 
@@ -668,7 +672,7 @@ int main( int argc, char* argv[] )
 	glutDisplayFunc(drawScene);
 
 	// Trigger timerFunc every 8.33 msec / 1 frame every 8.33ms
-	glutTimerFunc(8.33, timerFunc, 8.33);
+	glutTimerFunc(2, timerFunc, 2);
 
 	// Start the main loop.  glutMainLoop never returns.
 	glutMainLoop();
