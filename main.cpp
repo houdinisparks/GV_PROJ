@@ -468,10 +468,12 @@ namespace {
 
 			glPopAttrib();
 			glPopMatrix();
-			bvh.drawSkeleton(true, cur_frame);
+			//bvh.drawSkeleton(true, cur_frame);
+			bvh.drawMesh(true, cur_frame);
 		}
 		else {
-			bvh.drawSkeleton(true, cur_frame++);
+			//bvh.drawSkeleton(true, cur_frame++);
+			bvh.drawMesh(true,cur_frame);
 		}
 
 		// Dump the image to the screen.
@@ -535,13 +537,15 @@ int main( int argc, char* argv[] )
 	glutCreateWindow("GV PROJECT");
 
 	// Initialize OpenGL parameters.
-	//initRendering();
+	initRendering();
     initParticles_sys();
 
 	// Setup BVH
 	//initSystem(argc, argv);gv
-	bvh.load(argv[1]);
-	bvh.testOutput();
+	bvh.load(argv[1], argv[2] , argv[3]);
+	//bvh.loadMesh(argv[1]);
+	//bvh.loadAttachments(argv[3]);
+	//bvh.testOutput();
 
 	// Set up callback functions for key presses
 	glutKeyboardFunc(keyboardFunc); // Handles "normal" ascii symbols

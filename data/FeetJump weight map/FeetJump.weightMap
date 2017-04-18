@@ -1,0 +1,32 @@
+// Exported skin weight map file
+// 
+Robot2:Robot	Hips	Robot_Hips.iff
+Robot2:Robot	LeftUpLeg	Robot_LeftUpLeg.iff
+Robot2:Robot	LeftLeg	Robot_LeftLeg.iff
+Robot2:Robot	LeftFoot	Robot_LeftFoot.iff
+Robot2:Robot	LeftToeBase	Robot_LeftToeBase.iff
+Robot2:Robot	L_Toe_End	Robot_L_Toe_End.iff
+Robot2:Robot	RightUpLeg	Robot_RightUpLeg.iff
+Robot2:Robot	RightLeg	Robot_RightLeg.iff
+Robot2:Robot	RightFoot	Robot_RightFoot.iff
+Robot2:Robot	RightToeBase	Robot_RightToeBase.iff
+Robot2:Robot	R_Toe_End	Robot_R_Toe_End.iff
+Robot2:Robot	Spine	Robot_Spine.iff
+Robot2:Robot	Spine1	Robot_Spine1.iff
+Robot2:Robot	Neck	Robot_Neck.iff
+Robot2:Robot	Head	Robot_Head.iff
+Robot2:Robot	Head_End	Robot_Head_End.iff
+Robot2:Robot	LeftShoulder	Robot_LeftShoulder.iff
+Robot2:Robot	LeftArm	Robot_LeftArm.iff
+Robot2:Robot	LeftForeArm	Robot_LeftForeArm.iff
+Robot2:Robot	LeftHand	Robot_LeftHand.iff
+Robot2:Robot	LeftHandThumb	Robot_LeftHandThumb.iff
+Robot2:Robot	L_Thumb_End	Robot_L_Thumb_End.iff
+Robot2:Robot	L_Wrist_End	Robot_L_Wrist_End.iff
+Robot2:Robot	RightShoulder	Robot_RightShoulder.iff
+Robot2:Robot	RightArm	Robot_RightArm.iff
+Robot2:Robot	RightForeArm	Robot_RightForeArm.iff
+Robot2:Robot	RightHand	Robot_RightHand.iff
+Robot2:Robot	RightHandThumb	Robot_RightHandThumb.iff
+Robot2:Robot	R_Thumb_End	Robot_R_Thumb_End.iff
+Robot2:Robot	R_Wrist_End	Robot_R_Wrist_End.iff

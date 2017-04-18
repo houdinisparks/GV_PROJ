@@ -392,33 +392,33 @@ void SkeletalModel::updateMesh()
 	// and the current joint --> world transforms.
 	
 	//for each vertex (in world space bind pose), do transformations for each joint.
-	cout << "# of current vertices: " << m_mesh.currentVertices.size();
-	cout << "# of bind vertices: " << m_mesh.bindVertices.size();
+	//cout << "# of current vertices: " << m_mesh.currentVertices.size();
+	//cout << "# of bind vertices: " << m_mesh.vecv.size();
 
-	cout << "updating mesh" << endl;
-	for (int i = 0; i < m_mesh.bindVertices.size(); i++)
-	{
-		Vector4f bind_vertex(m_mesh.bindVertices[i] , 1.0f); //static
-		Vector4f updated_vertex(0.0f);
+	//cout << "updating mesh" << endl;
+	//for (int i = 0; i < m_mesh.vecv.size(); i++)
+	//{
+	//	Vector4f bind_vertex(m_mesh.vecv[i] , 1.0f); //static
+	//	Vector4f updated_vertex(0.0f);
 
-		//world --> joint transforms
-		for (int j = 0; j < m_mesh.attachments[i].size(); j++)
-		{
-			//wT1B1-1p
-			//Vector4f intm_joint = (m_joints[j+1] -> bindWorldToJointTransform) * bind_vertex; //B1-1*p
-			//Vector4f update_vertex = m_mesh.attachments[i][j] *
-			//	((m_joints[j + 1]->currentJointToWorldTransform) * intm_joint);
-			
-			Vector4f update_vertex = m_mesh.attachments[i][j] *
-				(m_joints[j + 1]->currentJointToWorldTransform *
-					m_joints[j + 1]->bindWorldToJointTransform * bind_vertex);
-			
-			updated_vertex = updated_vertex + update_vertex;
-			
-		}
+	//	//world --> joint transforms
+	//	for (int j = 0; j < m_mesh.attachments[i].size(); j++)
+	//	{
+	//		//wT1B1-1p
+	//		//Vector4f intm_joint = (m_joints[j+1] -> bindWorldToJointTransform) * bind_vertex; //B1-1*p
+	//		//Vector4f update_vertex = m_mesh.attachments[i][j] *
+	//		//	((m_joints[j + 1]->currentJointToWorldTransform) * intm_joint);
+	//		
+	//		Vector4f update_vertex = m_mesh.attachments[i][j] *
+	//			(m_joints[j + 1]->currentJointToWorldTransform *
+	//				m_joints[j + 1]->bindWorldToJointTransform * bind_vertex);
+	//		
+	//		updated_vertex = updated_vertex + update_vertex;
+	//		
+	//	}
 
-		m_mesh.currentVertices[i] = updated_vertex.xyz();
-	}
+	//	m_mesh.currentVertices[i] = updated_vertex.xyz();
+	//}
 	
 
 }

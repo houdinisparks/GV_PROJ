@@ -89,7 +89,6 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MatrixStack.cpp" />
     <ClCompile Include="Mesh.cpp" />
-    <ClCompile Include="SkeletalModel.cpp" />
     <ClCompile Include="vecmath\src\Matrix2f.cpp" />
     <ClCompile Include="vecmath\src\Matrix3f.cpp" />
     <ClCompile Include="vecmath\src\Matrix4f.cpp" />
@@ -107,7 +106,6 @@
     <ClInclude Include="MatrixStack.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="ModelerView.h" />
-    <ClInclude Include="SkeletalModel.h" />
     <ClInclude Include="tuple.h" />
     <ClInclude Include="vecmath\include\Matrix2f.h" />
     <ClInclude Include="vecmath\include\Matrix3f.h" />

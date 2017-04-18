@@ -1,11 +1,4 @@
 ﻿C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V140\Microsoft.CppBuild.targets(392,5): warning MSB8028: The intermediate directory (Debug\) contains files shared from another project (a2.vcxproj).  This can lead to incorrect clean and rebuild behavior.
-  Vector4f.cpp
-  Vector3f.cpp
-  Vector2f.cpp
-  Quat4f.cpp
-  Matrix4f.cpp
-  Matrix3f.cpp
-  Matrix2f.cpp
   main.cpp
 main.cpp(38): warning C4305: 'initializing': truncation from 'double' to 'float'
 main.cpp(105): warning C4305: '=': truncation from 'double' to 'float'
@@ -19,32 +12,7 @@ main.cpp(274): warning C4244: 'initializing': conversion from 'float' to 'int', 
 main.cpp(275): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
 main.cpp(280): warning C4305: '+=': truncation from 'double' to 'float'
 main.cpp(336): warning C4060: switch statement contains no 'case' or 'default' labels
-main.cpp(561): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
-main.cpp(561): warning C4244: 'argument': conversion from 'double' to 'unsigned int', possible loss of data
-  bitmap.cpp
-bitmap.cpp(22): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-  C:\Program Files (x86)\Windows Kits\10\Include\10.0.10240.0\ucrt\stdio.h(205): note: see declaration of 'fopen'
-bitmap.cpp(127): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-  C:\Program Files (x86)\Windows Kits\10\Include\10.0.10240.0\ucrt\stdio.h(205): note: see declaration of 'fopen'
-  SkeletalModel.cpp
-SkeletalModel.cpp(114): warning C4101: 'oor': unreferenced local variable
-SkeletalModel.cpp(399): warning C4018: '<': signed/unsigned mismatch
-SkeletalModel.cpp(405): warning C4018: '<': signed/unsigned mismatch
-  Mesh.cpp
-Mesh.cpp(47): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-Mesh.cpp(76): warning C4018: '<': signed/unsigned mismatch
-Mesh.cpp(119): warning C4018: '<': signed/unsigned mismatch
-  MatrixStack.cpp
-MatrixStack.cpp(2): warning C4067: unexpected tokens following preprocessor directive - expected a newline
-  Joint.cpp
-  BVH.cpp
-BVH.cpp(50): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
-BVH.cpp(56): warning C4101: 'buffer': unreferenced local variable
-BVH.cpp(315): warning C4018: '<': signed/unsigned mismatch
-BVH.cpp(383): warning C4018: '<': signed/unsigned mismatch
-  Generating Code...
-c:\users\yanyee\onedrive\documents\sutd\subjects\istd term 7\graphics and visualisation\project\gv_proj\bvh.cpp(245): warning C4715: 'BVH::loadJoint': not all control paths return a value
-  camera.cpp
-  LINK : C:\Users\yanyee\OneDrive\Documents\SUTD\subjects\ISTD Term 7\Graphics and Visualisation\project\gv_proj\Debug\gv_proj.exe not found or not built by the last incremental link; performing full link
+main.cpp(565): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
+main.cpp(565): warning C4244: 'argument': conversion from 'double' to 'unsigned int', possible loss of data
   gv_proj.vcxproj -> C:\Users\yanyee\OneDrive\Documents\SUTD\subjects\ISTD Term 7\Graphics and Visualisation\project\gv_proj\Debug\gv_proj.exe
   gv_proj.vcxproj -> C:\Users\yanyee\OneDrive\Documents\SUTD\subjects\ISTD Term 7\Graphics and Visualisation\project\gv_proj\Debug\gv_proj.pdb (Full PDB)

@@ -2,15 +2,20 @@
 
 #include "Joint.h"
 #include "Logger.h"
+#include "Mesh.h"
 
 
 class BVH
 {
 public:
+	void load(const char * bvhfile, const char * meshfile, const char * attachfile);
+	void loadBVH(const std::string & filename);
 	void loadHierarchy(std::istream& stream);
 	Joint* loadJoint(std::istream& stream, Joint* parent = NULL);
 
 	void loadMotion(std::istream& stream);
+
+	void computeBindWorldToJointTransforms(Joint *rootJoint);
 
 	typedef struct HIERARCHY
 	{
@@ -39,7 +44,6 @@ public:
 	~BVH() {};
 	
 	// loading 
-	void load(const std::string& filename);
 
 	void printJoint(const Joint* const joint) const;
 
@@ -52,8 +56,14 @@ public:
 	unsigned getNumFrames() const { return motionData.num_frames; }
 
 
+	void updateMesh();
+
+	void drawMesh(bool drawMesh, int frame);
+
 	// Drawing the Skeleton
 	void bvhToVertices(Joint * joint, std::vector<Vector4f>& vertices, std::vector<int>& indices, int parentIndex);
+	void loadMesh(const char * meshFile);
+	void loadAttachments(const char * attachmentFile);
 	void testOutput() const;
 	void drawSkeleton( bool drawSkeleton, int frame );
 	
@@ -63,7 +73,9 @@ private:
 	std::vector<Vector4f> skeletalVertices;
 	std::vector<int> skeletalIndices;
 	Joint* rootJoint;
+	std::vector<Joint*> m_joints;
 	MOTION motionData;
+	Mesh m_mesh;
 };
 
 

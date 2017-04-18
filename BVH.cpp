@@ -50,7 +50,18 @@ float convertToRadians(float degrees) {
 	return (M_PI * degrees) / 180.0f;
 
 }
-void BVH::load(const std::string& filename)
+
+void BVH::load(const char* bvhfile, const char* meshfile, const char *attachfile) {
+	loadBVH(bvhfile);
+	loadMesh(meshfile);
+	loadAttachments(attachfile);
+
+	computeBindWorldToJointTransforms(rootJoint);
+	//updateCurrentJointToWorldTransforms()//this is done in moveJoint step.;
+
+}
+
+void BVH::loadBVH(const std::string& filename)
 {
 	std::fstream file;
 	char buffer[8192];
@@ -72,7 +83,7 @@ void BVH::load(const std::string& filename)
 
 		file.close();
 	}
-
+	klog.l("Joints") << "# of Joints: " << m_joints.size();
 	std::cout << "loaded finished" << std::endl;
 }
 
@@ -118,6 +129,7 @@ Joint* BVH::loadJoint(std::istream& stream, Joint* parent) //default value of pa
 	std::string* name = new std::string;
 	stream >> *name;
 	joint->name = name->c_str();
+	 m_joints.push_back(joint); //include all joints except end site
 
 	std::string tmp;
 
@@ -208,6 +220,7 @@ Joint* BVH::loadJoint(std::istream& stream, Joint* parent) //default value of pa
 				tmp_joint->num_channels = 0;
 				tmp_joint->name = "EndSite";
 				joint->children.push_back(tmp_joint);
+				m_joints.push_back(tmp_joint);
 
 				//            allJoints.insert(tmp_joint);
 
@@ -291,6 +304,26 @@ void BVH::loadMotion(std::istream& stream)
 
 }
 
+void BVH::computeBindWorldToJointTransforms(Joint *joint) {
+	//assume frame 0 is binding pose.
+
+	if (joint->parent != NULL) {
+
+		joint->bindWorldToJointTransform = (joint->parent->bindWorldToJointTransform * Matrix4f::translation(joint->offset.x,
+			joint->offset.y,
+			joint->offset.z)).inverse();
+
+
+	}
+	else {
+		joint->bindWorldToJointTransform = Matrix4f::identity().inverse();
+	}
+
+	for (auto& child : joint->children) {
+		computeBindWorldToJointTransforms(child);
+	}
+}
+
 /**
 Calculates Joint's local transformation matrix for
 specified frame starting index
@@ -317,7 +350,7 @@ void BVH::moveJoint(Joint* joint, MOTION* motionData, int frame_starts_index)
 		// channel alias
 		const short& channel = joint->channels_order[i];
 
-		// extract value from motion data
+		// extract value from motion data, each frame with respect to bind frame
 		float value = motionData->data[start_index + i];
 
 		if (channel & Xposition)
@@ -365,7 +398,7 @@ void BVH::moveTo(unsigned frame)
 
 	// recursively transform skeleton
 	moveJoint(rootJoint, &motionData, start_index);
-
+	
 
 }
 
@@ -402,6 +435,47 @@ void BVH::drawSkeleton(bool drawSkeleton, int frame = 0) {
 	skeletalIndices.clear();
 }
 
+//for drawing the mesh
+void BVH::updateMesh() {
+	//klog.l("Mesh") << "updating mesh";
+	for (int i = 0; i < m_mesh.vecv.size(); i++)
+	{
+		Vector4f bind_vertex(m_mesh.vecv[i], 1.0f); //static
+		Vector4f updated_vertex(0.0f);
+		//klog.l("Mesh") << "1";
+		//world --> joint transforms
+		for (int j = 0; j < m_mesh.attachments[i].size(); j += 2)
+		{
+			//wT1B1-1p
+			int jt_idx = m_mesh.attachments[i][j];
+			//klog.l("Mesh") << "2";
+			float jt_weights = m_mesh.attachments[i][j + 1];
+			//klog.l("Mesh") << "3";
+			Vector4f update_vertex = jt_weights *
+				(m_joints[jt_idx]->transform *
+					m_joints[jt_idx]->bindWorldToJointTransform * bind_vertex);
+
+			updated_vertex = updated_vertex + update_vertex;
+			//klog.l("Mesh") << "4";
+		}
+
+		m_mesh.currentVertices[i] = updated_vertex.xyz();
+	}
+
+}
+
+void BVH::drawMesh(bool drawMesh, int frame = 0) {
+	frame = frame % motionData.num_frames;
+	moveTo(frame); //updates the joint -> world transformations of all joints
+	//updateMesh();
+
+
+	m_mesh.draw();
+
+	//some function to update the vertices
+
+}
+
 void BVH::bvhToVertices(Joint* joint, std::vector<Vector4f>& vertices, std::vector<int>&   indices, int parentIndex = 0) {
 	// vertex from current joint is in 4-th ROW (column-major ordering)
 	Vector4f translatedVertex = joint->transform.getCol(3); //get the translation of the vertex
@@ -424,6 +498,21 @@ void BVH::bvhToVertices(Joint* joint, std::vector<Vector4f>& vertices, std::vect
 	}
 }
 
+void BVH::loadMesh(const char *meshFile) {
+	klog.l("Mesh") << "loading mesh";
+	m_mesh.load(meshFile); //populates the faces, the currentVertices
+	klog.l("Mesh") << "finish loading mesh";
+}
+
+void BVH::loadAttachments(const char *attachmentFile) {
+	klog.l("Attachments") << "loading attachmehnts";
+	m_mesh.loadAttachments(attachmentFile);
+	klog.l("Attachments") << "finish loading attachmehnts";
+}
+
+//----------------------------------------------------------------------
+//FOR DEBUGGING PURPOSES -----------------------------------------------
+//-----------------------------------------------------------------------
 void BVH::printJoint(const Joint* const joint) const
 {
 	klog.l("joint") << "print joint" << joint->name << joint->channel_start;
@@ -452,6 +541,7 @@ void BVH::testOutput() const
 
 	int num_frames = motionData.num_frames;
 	int num_channels = motionData.num_motion_channels;
+	//klog.l() << 
 
 
 }

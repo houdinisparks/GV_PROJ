@@ -60,9 +60,6 @@
     <ClCompile Include="vecmath\src\Vector3f.cpp">
       <Filter>Source Files\vecmath</Filter>
     </ClCompile>
-    <ClCompile Include="SkeletalModel.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="BVH.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -108,9 +105,6 @@
       <Filter>Header Files\vecmath</Filter>
     </ClInclude>
     <ClInclude Include="ModelerView.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SkeletalModel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="tuple.h">

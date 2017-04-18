@@ -22,11 +22,14 @@ struct Mesh
 	
 	// list of vertices from the OBJ file
 	// in the "bind pose"
-	std::vector< Vector3f > bindVertices;
+	std::vector< Vector3f > vecv;
 
 	// each face has 3 indices
 	// referencing 3 vertices
 	std::vector< Tuple3u > faces;
+	std::vector<std::vector<unsigned> > vecf;
+
+	std::vector<Vector3f> vecn;
 
 	// current vertex positions after animation
 	std::vector< Vector3f > currentVertices;
@@ -42,9 +45,11 @@ struct Mesh
 	// 2.1.2. draw the current mesh.
 	void draw();
 
+
 	// 2.2. Implement this method to load the per-vertex attachment weights
 	// this method should update m_mesh.attachments
-	void loadAttachments( const char* filename, int numJoints );
+	void loadAttachments(const char *filename);
+
 
 
 
