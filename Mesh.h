@@ -22,14 +22,14 @@ struct Mesh
 	
 	// list of vertices from the OBJ file
 	// in the "bind pose"
-	std::vector< Vector3f > vecv;
+	std::vector< Vector3f > vecv; // bindV'ertices
 
 	// each face has 3 indices
 	// referencing 3 vertices
 	std::vector< Tuple3u > faces;
-	std::vector<std::vector<unsigned> > vecf;
+	//std::vector<std::vector<unsigned> > vecf;
 
-	std::vector<Vector3f> vecn;
+	//std::vector<Vector3f> vecn;
 
 	// current vertex positions after animation
 	std::vector< Vector3f > currentVertices;

@@ -57,6 +57,7 @@ void BVH::load(const char* bvhfile, const char* meshfile, const char *attachfile
 	loadAttachments(attachfile);
 
 	computeBindWorldToJointTransforms(rootJoint);
+	printJoint(rootJoint);
 	//updateCurrentJointToWorldTransforms()//this is done in moveJoint step.;
 
 }
@@ -309,14 +310,19 @@ void BVH::computeBindWorldToJointTransforms(Joint *joint) {
 
 	if (joint->parent != NULL) {
 
-		joint->bindWorldToJointTransform = (joint->parent->bindWorldToJointTransform * Matrix4f::translation(joint->offset.x,
+		joint->transform = joint->parent->transform * Matrix4f::translation(joint->offset.x,
 			joint->offset.y,
-			joint->offset.z)).inverse();
+			joint->offset.z);
 
+		joint->bindWorldToJointTransform = joint->transform.inverse();
 
 	}
 	else {
-		joint->bindWorldToJointTransform = Matrix4f::identity().inverse();
+		joint->transform = Matrix4f::translation(joint->offset.x,
+			joint->offset.y,
+			joint->offset.z);
+
+		joint->bindWorldToJointTransform = joint->transform.inverse(); //0 0 0 offset
 	}
 
 	for (auto& child : joint->children) {
@@ -454,7 +460,7 @@ void BVH::updateMesh() {
 			Vector4f update_vertex = jt_weights *
 				(m_joints[jt_idx]->transform *
 					m_joints[jt_idx]->bindWorldToJointTransform * bind_vertex);
-
+			//klog.l("weights") << jt_idx << " " << jt_weights;
 			updated_vertex = updated_vertex + update_vertex;
 			//klog.l("Mesh") << "4";
 		}
@@ -467,7 +473,7 @@ void BVH::updateMesh() {
 void BVH::drawMesh(bool drawMesh, int frame = 0) {
 	frame = frame % motionData.num_frames;
 	moveTo(frame); //updates the joint -> world transformations of all joints
-	//updateMesh();
+	updateMesh();
 
 
 	m_mesh.draw();
@@ -513,9 +519,13 @@ void BVH::loadAttachments(const char *attachmentFile) {
 //----------------------------------------------------------------------
 //FOR DEBUGGING PURPOSES -----------------------------------------------
 //-----------------------------------------------------------------------
-void BVH::printJoint(const Joint* const joint) const
+void BVH::printJoint(Joint* joint) const
 {
-	klog.l("joint") << "print joint" << joint->name << joint->channel_start;
+	klog.l("joint")  << joint->name << joint->channel_start;
+	klog.l(joint->name) << "WtoJ \n";
+	joint->bindWorldToJointTransform.print();
+	//klog.l(joint->name) << "JtoW \n";
+	//joint->transform.print();
 
 	for (std::vector<Joint*>::const_iterator ct = joint->children.begin();
 		ct != joint->children.end(); ++ct)
@@ -525,6 +535,11 @@ void BVH::printJoint(const Joint* const joint) const
 			printJoint(_tmp);
 	}
 
+	//for (int i = 0; i < m_joints.size(); i++)
+	//{
+	//	std::cout << m_joints[i]->name << " ";
+	//}
+	//std::cout << std::endl;
 }
 
 

@@ -45,7 +45,7 @@ public:
 	
 	// loading 
 
-	void printJoint(const Joint* const joint) const;
+	void printJoint( Joint*  joint) const;
 
 	void moveJoint(Joint * joint, MOTION * motionData, int frame_starts_index);
 

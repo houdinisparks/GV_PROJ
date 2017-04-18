@@ -29,6 +29,9 @@
 #define SNOW	1
 #define	HAIL	2
 
+// toggle views
+bool skeleOn = true;
+int particleOn = 0; //toggle 0 - off, 1 - rain , 2 - snow
 
 float slowdown = 2.0;
 float velocity = 0.0;
@@ -123,7 +126,7 @@ namespace {
       int x, z;
 
         glShadeModel(GL_SMOOTH);
-        glClearColor(0.0, 0.0, 0.0, 0.0);
+        //glClearColor(0.0, 0.0, 0.0, 0.0);
         glClearDepth(1.0);
         glEnable(GL_DEPTH_TEST);
 
@@ -307,6 +310,21 @@ namespace {
 			camera.SetCenter(Vector3f::ZERO);
 			break;
 		}
+		
+		case 's': //s key
+		{
+			skeleOn = !skeleOn;
+			cout << skeleOn;
+			break;
+		}
+		case 'p':
+		{
+			particleOn += 1;
+			if (particleOn > 2) {
+				particleOn = 0;
+			}
+			break;
+		}
 
 		//case 'w': //wireframe
 		//{
@@ -407,7 +425,7 @@ namespace {
 		glCullFace(GL_BACK);
 
 		// Clear to black
-		glClearColor(0, 0, 0, 1);
+		glClearColor(0.0156862f, 0.1215686f, 0.18823529f, 1.0f);
 	}
 
 	// This function is responsible for displaying the object.
@@ -435,7 +453,6 @@ namespace {
 
 		//drawSystem();
 		//x	cout << "bvh1";
-		drawSnow();
 
 		// This draws the coordinate axes when you're rotating, to
 		// keep yourself oriented.
@@ -468,12 +485,37 @@ namespace {
 
 			glPopAttrib();
 			glPopMatrix();
-			//bvh.drawSkeleton(true, cur_frame);
-			bvh.drawMesh(true, cur_frame);
+
+
+
+
+			if (skeleOn) {
+				bvh.drawSkeleton(true, cur_frame);
+
+			}
+			else {
+				bvh.drawMesh(true, cur_frame);
+
+			}
 		}
 		else {
-			//bvh.drawSkeleton(true, cur_frame++);
-			bvh.drawMesh(true,cur_frame);
+
+			if (skeleOn) {
+
+;				bvh.drawSkeleton(true, cur_frame++);
+
+			}
+			else {
+				bvh.drawMesh(true, cur_frame);
+
+			}
+		}
+
+		if (particleOn == 1) {
+			drawRain();
+		}
+		else if (particleOn == 2) {
+			drawSnow();
 		}
 
 		// Dump the image to the screen.
@@ -543,6 +585,7 @@ int main( int argc, char* argv[] )
 	// Setup BVH
 	//initSystem(argc, argv);gv
 	bvh.load(argv[1], argv[2] , argv[3]);
+	//bvh.loadBVH(argv[1]);
 	//bvh.loadMesh(argv[1]);
 	//bvh.loadAttachments(argv[3]);
 	//bvh.testOutput();
