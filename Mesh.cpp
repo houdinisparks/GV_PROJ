@@ -95,7 +95,7 @@ void Mesh::load(const char* filename)
 			}
 
 			else if (type == "f") {
-				vector<unsigned> temp_vec;
+				vector<int> temp_vec;
 				for (int i = 1; i < temp_stor.size(); i++)
 				{
 					char *token = strtok(&temp_stor[i][0], "/");
@@ -106,7 +106,7 @@ void Mesh::load(const char* filename)
 				}
 				//vecf.push_back(temp_vec);
 
-				faces.push_back(Tuple3u(temp_vec[0], temp_vec[1], temp_vec[2]));
+				faces.push_back(temp_vec);
 
 			}
 		}
@@ -194,6 +194,30 @@ void Mesh::draw()
 
 		glVertex3d(g_vertex[0], g_vertex[1], g_vertex[2]);
 
+		if (faces[i].size() == 4) {
+			//int a,d,g are the indices of the vertices.
+			int a = faces[i][0];
+			int d = faces[i][2];
+			int g = faces[i][3];
+
+			//minus 1 because the faces index vertices and normals from 1
+			Vector3f a_vertex = currentVertices[a - 1];
+			Vector3f d_vertex = currentVertices[d - 1];
+			Vector3f g_vertex = currentVertices[g - 1];
+			normal = Vector3f::cross(d_vertex - a_vertex, g_vertex - a_vertex).normalized();
+
+			//int b,e,h are the respective normals. however, we only need to generate one normal per triangle.
+
+			glNormal3d(normal[0], normal[1], normal[2]);
+			glColor3f(1.0f, 0.0f, 0.0f);
+			glVertex3d(a_vertex[0], a_vertex[1], a_vertex[2]);
+			glColor3f(1.0f, 0.0f, 0.0f);
+			glVertex3d(d_vertex[0], d_vertex[1], d_vertex[2]);
+			glColor3f(1.0f, 0.0f, 0.0f);
+
+			glVertex3d(g_vertex[0], g_vertex[1], g_vertex[2]);
+
+		}
 
 	}
 	glEnd();

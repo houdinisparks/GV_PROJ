@@ -26,7 +26,7 @@ struct Mesh
 
 	// each face has 3 indices
 	// referencing 3 vertices
-	std::vector< Tuple3u > faces;
+	std::vector< std::vector<int >> faces;
 	//std::vector<std::vector<unsigned> > vecf;
 
 	//std::vector<Vector3f> vecn;

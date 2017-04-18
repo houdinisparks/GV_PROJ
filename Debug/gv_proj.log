@@ -1,19 +1,15 @@
 ﻿C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V140\Microsoft.CppBuild.targets(392,5): warning MSB8028: The intermediate directory (Debug\) contains files shared from another project (a2.vcxproj).  This can lead to incorrect clean and rebuild behavior.
-cl : Command line warning D9028: minimal rebuild failure, reverting to normal build
-  main.cpp
-main.cpp(41): warning C4305: 'initializing': truncation from 'double' to 'float'
-main.cpp(108): warning C4305: '=': truncation from 'double' to 'float'
-main.cpp(120): warning C4305: '=': truncation from 'double' to 'float'
-main.cpp(137): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-main.cpp(139): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-main.cpp(167): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
-main.cpp(200): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
-main.cpp(237): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-main.cpp(277): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-main.cpp(278): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-main.cpp(283): warning C4305: '+=': truncation from 'double' to 'float'
-main.cpp(354): warning C4060: switch statement contains no 'case' or 'default' labels
-main.cpp(608): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
-main.cpp(608): warning C4244: 'argument': conversion from 'double' to 'unsigned int', possible loss of data
+  Mesh.cpp
+Mesh.cpp(94): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+Mesh.cpp(99): warning C4018: '<': signed/unsigned mismatch
+Mesh.cpp(101): warning C4996: 'strtok': This function or variable may be unsafe. Consider using strtok_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  C:\Program Files (x86)\Windows Kits\10\Include\10.0.10240.0\ucrt\string.h(453): note: see declaration of 'strtok'
+Mesh.cpp(173): warning C4018: '<': signed/unsigned mismatch
+Mesh.cpp(266): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+Mesh.cpp(248): warning C4996: 'strtok': This function or variable may be unsafe. Consider using strtok_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  C:\Program Files (x86)\Windows Kits\10\Include\10.0.10240.0\ucrt\string.h(453): note: see declaration of 'strtok'
+Mesh.cpp(272): warning C4996: 'strtok': This function or variable may be unsafe. Consider using strtok_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  C:\Program Files (x86)\Windows Kits\10\Include\10.0.10240.0\ucrt\string.h(453): note: see declaration of 'strtok'
+  LINK : C:\Users\yanyee\OneDrive\Documents\SUTD\subjects\ISTD Term 7\Graphics and Visualisation\project\gv_proj\Debug\gv_proj.exe not found or not built by the last incremental link; performing full link
   gv_proj.vcxproj -> C:\Users\yanyee\OneDrive\Documents\SUTD\subjects\ISTD Term 7\Graphics and Visualisation\project\gv_proj\Debug\gv_proj.exe
   gv_proj.vcxproj -> C:\Users\yanyee\OneDrive\Documents\SUTD\subjects\ISTD Term 7\Graphics and Visualisation\project\gv_proj\Debug\gv_proj.pdb (Full PDB)
