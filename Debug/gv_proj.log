@@ -1,4 +1,5 @@
 ﻿C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V140\Microsoft.CppBuild.targets(392,5): warning MSB8028: The intermediate directory (Debug\) contains files shared from another project (a2.vcxproj).  This can lead to incorrect clean and rebuild behavior.
+<<<<<<< HEAD
   Mesh.cpp
 Mesh.cpp(94): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
 Mesh.cpp(99): warning C4018: '<': signed/unsigned mismatch
@@ -13,3 +14,22 @@ Mesh.cpp(272): warning C4996: 'strtok': This function or variable may be unsafe.
   LINK : C:\Users\yanyee\OneDrive\Documents\SUTD\subjects\ISTD Term 7\Graphics and Visualisation\project\gv_proj\Debug\gv_proj.exe not found or not built by the last incremental link; performing full link
   gv_proj.vcxproj -> C:\Users\yanyee\OneDrive\Documents\SUTD\subjects\ISTD Term 7\Graphics and Visualisation\project\gv_proj\Debug\gv_proj.exe
   gv_proj.vcxproj -> C:\Users\yanyee\OneDrive\Documents\SUTD\subjects\ISTD Term 7\Graphics and Visualisation\project\gv_proj\Debug\gv_proj.pdb (Full PDB)
+=======
+  main.cpp
+main.cpp(38): warning C4305: 'initializing': truncation from 'double' to 'float'
+main.cpp(105): warning C4305: '=': truncation from 'double' to 'float'
+main.cpp(117): warning C4305: '=': truncation from 'double' to 'float'
+main.cpp(134): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+main.cpp(136): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+main.cpp(164): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+main.cpp(197): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+main.cpp(234): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+main.cpp(274): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+main.cpp(275): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+main.cpp(308): warning C4305: '+=': truncation from 'double' to 'float'
+main.cpp(372): warning C4060: switch statement contains no 'case' or 'default' labels
+main.cpp(624): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
+main.cpp(624): warning C4244: 'argument': conversion from 'double' to 'unsigned int', possible loss of data
+  gv_proj.vcxproj -> C:\Users\Loo Yi\Desktop\GV_PROJ\Debug\gv_proj.exe
+  gv_proj.vcxproj -> C:\Users\Loo Yi\Desktop\GV_PROJ\Debug\gv_proj.pdb (Full PDB)
+>>>>>>> d228d5557c0da2c8d12b47be39980af36f6bd862
