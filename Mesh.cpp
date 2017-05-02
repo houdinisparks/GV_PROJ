@@ -169,7 +169,11 @@ void Mesh::draw()
 	//glEnd();
 	//GLfloat colour[4] = { 1.0f,0,0,1.0f };
 	//glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, colour);
+
 	glBegin(GL_TRIANGLES);
+	glShadeModel(GL_SMOOTH);
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_FRONT_AND_BACK);
 	for (int i = 0; i < faces.size(); i++)
 	{
 		//int a,d,g are the indices of the vertices.
@@ -186,11 +190,13 @@ void Mesh::draw()
 		//int b,e,h are the respective normals. however, we only need to generate one normal per triangle.
 
 		glNormal3d(normal[0], normal[1], normal[2]);
-		glColor3f(1.0f,0.0f,0.0f);
+		glColor3f(0.5f,0.5f,0.5f);
 		glVertex3d(a_vertex[0], a_vertex[1], a_vertex[2]);
-		glColor3f(1.0f, 0.0f, 0.0f);
+		glColor3f(0.5f, 0.5f, 0.5f);
+
 		glVertex3d(d_vertex[0], d_vertex[1], d_vertex[2]);
-		glColor3f(1.0f, 0.0f, 0.0f);
+		glColor3f(0.5f, 0.5f, 0.5f);
+
 
 		glVertex3d(g_vertex[0], g_vertex[1], g_vertex[2]);
 
@@ -209,11 +215,11 @@ void Mesh::draw()
 			//int b,e,h are the respective normals. however, we only need to generate one normal per triangle.
 
 			glNormal3d(normal[0], normal[1], normal[2]);
-			glColor3f(1.0f, 0.0f, 0.0f);
+			glColor3f(0.5f, 0.5f, 0.5f);
 			glVertex3d(a_vertex[0], a_vertex[1], a_vertex[2]);
-			glColor3f(1.0f, 0.0f, 0.0f);
+			glColor3f(0.5f, 0.5f, 0.5f);
 			glVertex3d(d_vertex[0], d_vertex[1], d_vertex[2]);
-			glColor3f(1.0f, 0.0f, 0.0f);
+			glColor3f(0.5f, 0.5f, 0.5f);
 
 			glVertex3d(g_vertex[0], g_vertex[1], g_vertex[2]);
 

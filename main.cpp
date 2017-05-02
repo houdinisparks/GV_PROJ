@@ -252,6 +252,8 @@ namespace {
 
     // For Snow
     void drawSnow() {
+		
+		glBegin(GL_POINTS);
       float x, y, z;
       for (loop = 0; loop < MAX_PARTICLES; loop=loop+2) {
         if (par_sys[loop].alive == true) {
@@ -327,6 +329,7 @@ namespace {
           }
         }
       }
+	  glEnd();
     }
 
 
