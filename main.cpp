@@ -27,7 +27,6 @@
 #define WCY		480
 #define RAIN	0
 #define SNOW	1
-#define	HAIL	2
 
 // toggle views
 bool skeleOn = true;
@@ -35,13 +34,14 @@ int particleOn = 0; //toggle 0 - off, 1 - rain , 2 - snow
 
 float slowdown = 2.0;
 float velocity = 0.0;
-float zoom = 0.0;
+// float zoom = 0.0;
 float pan = 0.0;
 float tilt = 0.0;
 float hailsize = 0.1;
 
 int loop;
 int fall;
+bool first = true;
 
 //floor colors
 float r = 0.0;
@@ -49,7 +49,7 @@ float g = 1.0;
 float b = 0.0;
 float ground_points[200][200][3];
 float ground_colors[200][200][4];
-float accum = -10.0;
+float accum = 0.0;
 
 typedef struct {
   // Life
@@ -89,7 +89,7 @@ namespace {
     void initParticles(int i);
     void initParticles_sys();
     void drawRain();
-    void drawHail();
+    // void drawHail();
     void drawSnow();
     void arcballRotation(int endX, int endY);
 
@@ -101,8 +101,6 @@ namespace {
 	void drawScene(void);
 	void initRendering();
 
-	// This function is called whenever a "Normal" key press is
-	// received.
     void initParticles(int i) {
         par_sys[i].alive = true;
         par_sys[i].life = 3.2;
@@ -117,7 +115,7 @@ namespace {
         par_sys[i].blue = 1.0;
 
         par_sys[i].vel = velocity;
-        par_sys[i].gravity = -0.8;//-0.8;
+        par_sys[i].gravity = -0.8;
 
     }
 
@@ -158,7 +156,7 @@ namespace {
         if (par_sys[loop].alive == true) {
           x = par_sys[loop].xpos;
           y = par_sys[loop].ypos;
-          z = par_sys[loop].zpos + zoom;
+          z = par_sys[loop].zpos;
 
           // Draw particles
           glColor3f(0.5, 0.5, 1.0);
@@ -186,87 +184,24 @@ namespace {
       }
     }
 
-    // For Hail
-    void drawHail() {
-      float x, y, z;
-
-      for (loop = 0; loop < MAX_PARTICLES; loop=loop+2) {
-        if (par_sys[loop].alive == true) {
-          x = par_sys[loop].xpos;
-          y = par_sys[loop].ypos;
-          z = par_sys[loop].zpos + zoom;
-
-          // Draw particles
-          glColor3f(0.8, 0.8, 0.9);
-          glBegin(GL_QUADS);
-            // Front
-            glVertex3f(x-hailsize, y-hailsize, z+hailsize); // lower left
-            glVertex3f(x-hailsize, y+hailsize, z+hailsize); // upper left
-            glVertex3f(x+hailsize, y+hailsize, z+hailsize); // upper right
-            glVertex3f(x+hailsize, y-hailsize, z+hailsize); // lower left
-            //Left
-            glVertex3f(x-hailsize, y-hailsize, z+hailsize);
-            glVertex3f(x-hailsize, y-hailsize, z-hailsize);
-            glVertex3f(x-hailsize, y+hailsize, z-hailsize);
-            glVertex3f(x-hailsize, y+hailsize, z+hailsize);
-            // Back
-            glVertex3f(x-hailsize, y-hailsize, z-hailsize);
-            glVertex3f(x-hailsize, y+hailsize, z-hailsize);
-            glVertex3f(x+hailsize, y+hailsize, z-hailsize);
-            glVertex3f(x+hailsize, y-hailsize, z-hailsize);
-            //Right
-            glVertex3f(x+hailsize, y+hailsize, z+hailsize);
-            glVertex3f(x+hailsize, y+hailsize, z-hailsize);
-            glVertex3f(x+hailsize, y-hailsize, z-hailsize);
-            glVertex3f(x+hailsize, y-hailsize, z+hailsize);
-            //Top
-            glVertex3f(x-hailsize, y+hailsize, z+hailsize);
-            glVertex3f(x-hailsize, y+hailsize, z-hailsize);
-            glVertex3f(x+hailsize, y+hailsize, z-hailsize);
-            glVertex3f(x+hailsize, y+hailsize, z+hailsize);
-            //Bottom
-            glVertex3f(x-hailsize, y-hailsize, z+hailsize);
-            glVertex3f(x-hailsize, y-hailsize, z-hailsize);
-            glVertex3f(x+hailsize, y-hailsize, z-hailsize);
-            glVertex3f(x+hailsize, y-hailsize, z+hailsize);
-          glEnd();
-
-          // Update values
-          //Move
-          if (par_sys[loop].ypos <= -10) {
-            par_sys[loop].vel = par_sys[loop].vel * -1.0;
-          }
-          par_sys[loop].ypos += par_sys[loop].vel / (slowdown*1000); // * 1000
-          par_sys[loop].vel += par_sys[loop].gravity;
-
-          // Decay
-          par_sys[loop].life -= par_sys[loop].fade;
-
-          //Revive
-          if (par_sys[loop].life < 0.0) {
-            initParticles(loop);
-          }
-        }
-      }
-    }
-
     // For Snow
     void drawSnow() {
-		
-		glBegin(GL_POINTS);
+
+	  glBegin(GL_POINTS);
       float x, y, z;
       for (loop = 0; loop < MAX_PARTICLES; loop=loop+2) {
         if (par_sys[loop].alive == true) {
           x = par_sys[loop].xpos;
           y = par_sys[loop].ypos;
-          z = par_sys[loop].zpos + zoom;
+          z = par_sys[loop].zpos;
 
           // Draw particles
           glColor3f(1.0, 1.0, 1.0);
           glPushMatrix();
           glTranslatef(x, y, z);
-          glutSolidSphere(2, 16, 16);
+          glutSolidSphere(1, 16, 16);
           glPopMatrix();
+
 
           // Update values
           //Move
@@ -275,7 +210,12 @@ namespace {
           // Decay
           par_sys[loop].life -= par_sys[loop].fade;
 
-          if (par_sys[loop].ypos <= -10) {
+          if(par_sys[loop].ypos<=50.0 && !bvh.check_mesh_collide()){
+			  bvh.init_mesh_collide();
+
+          }
+          //collision with floor
+          if (par_sys[loop].ypos <= 0.0) {
 			int zi = z + 100;
 			int xi = x + 100;
             int range_zi_minus;
@@ -302,8 +242,6 @@ namespace {
             }else{
                 range_xi_plus = xi + 3;
             }
-
-            // std::cout << zi<<" "<<xi << std::endl;
             for(int zzi = range_zi_minus; zzi <=range_zi_plus; ++zzi){
                 for(int xxi =range_xi_minus; xxi <= range_xi_plus; ++xxi){
                     ground_colors[zzi][xxi][0] = 1.0;
@@ -314,12 +252,6 @@ namespace {
                     }
                 }
             }
-            // ground_colors[zi][xi][0] = 1.0;
-            // ground_colors[zi][xi][2] = 1.0;
-            // ground_colors[zi][xi][3] += 1.0;
-            // if (ground_colors[zi][xi][3] > 1.0) {
-            //   ground_points[xi][zi][1] += 0.1;
-            // }
             par_sys[loop].life = -1.0;
           }
 
@@ -349,7 +281,7 @@ namespace {
 			camera.SetCenter(Vector3f::ZERO);
 			break;
 		}
-		
+
 		case 's': //s key
 		{
 			skeleOn = !skeleOn;
@@ -359,7 +291,7 @@ namespace {
 		case 'p':
 		{
 			particleOn += 1;
-			if (particleOn > 2) {
+			if (particleOn%2==0) {
 				particleOn = 0;
 			}
 			break;
@@ -450,21 +382,21 @@ namespace {
 	// Initialize OpenGL's rendering modes
 	void initRendering()
 	{
-		glEnable(GL_DEPTH_TEST);   // Depth testing must be turned on
-		glEnable(GL_LIGHTING);     // Enable lighting calculations
-		glEnable(GL_LIGHT0);       // Turn on light #0.
-
-		glEnable(GL_NORMALIZE);
-
-		// Setup polygon drawing
-		glShadeModel(GL_SMOOTH);
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
-		glEnable(GL_CULL_FACE);
-		glCullFace(GL_BACK);
+		// glEnable(GL_DEPTH_TEST);   // Depth testing must be turned on
+		// glEnable(GL_LIGHTING);     // Enable lighting calculations
+		// glEnable(GL_LIGHT0);       // Turn on light #0.
+        //
+		// glEnable(GL_NORMALIZE);
+        //
+		// // Setup polygon drawing
+		// glShadeModel(GL_SMOOTH);
+		// glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        //
+		// glEnable(GL_CULL_FACE);
+		// glCullFace(GL_BACK);
 
 		// Clear to black
-		glClearColor(0.0156862f, 0.1215686f, 0.18823529f, 1.0f);
+		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	}
 
 	// This function is responsible for displaying the object.
@@ -502,19 +434,19 @@ namespace {
               glColor3fv(ground_colors[i+100][j+100]);
               glVertex3f(ground_points[j+100][i+100][0],
                     ground_points[j+100][i+100][1],
-                    ground_points[j+100][i+100][2] + zoom);
+                    ground_points[j+100][i+100][2] );
               glColor3fv(ground_colors[i+100][j+1+100]);
               glVertex3f(ground_points[j+1+100][i+100][0],
                     ground_points[j+1+100][i+100][1],
-                    ground_points[j+1+100][i+100][2] + zoom);
+                    ground_points[j+1+100][i+100][2]);
               glColor3fv(ground_colors[i+1+100][j+1+100]);
               glVertex3f(ground_points[j+1+100][i+1+100][0],
                     ground_points[j+1+100][i+1+100][1],
-                    ground_points[j+1+100][i+1+100][2] + zoom);
+                    ground_points[j+1+100][i+1+100][2] );
               glColor3fv(ground_colors[i+1+100][j+100]);
               glVertex3f(ground_points[j+100][i+1+100][0],
                     ground_points[j+100][i+1+100][1],
-                    ground_points[j+100][i+1+100][2] + zoom);
+                    ground_points[j+100][i+1+100][2] );
             }
 
 
@@ -578,16 +510,14 @@ namespace {
 			}
 		}
 
+		// if (particleOn == 1) {
+		// 	//klog.l("drawing") << "drawRain";
+		// 	drawRain();
+		// }
 		if (particleOn == 1) {
-			//klog.l("drawing") << "drawRain";
-			drawRain();
-		}
-		else if (particleOn == 2) {
-			//klog.l("drawing") << "drawSnow";
-
 			drawSnow();
-		}
 
+		}
 		// Dump the image to the screen.
 		glutSwapBuffers();
 	}

@@ -113,7 +113,7 @@ void BVH::loadHierarchy(std::istream& stream)
 		else if (trim(tmp) == "MOTION")
 			loadMotion(stream);
 	}
-	
+
 
 	//std::cout << " finish heirarchy" << std::endl;
 
@@ -212,7 +212,7 @@ Joint* BVH::loadJoint(std::istream& stream, Joint* parent) //default value of pa
 			else if (tmp == "End")
 			{
 				// End Site {
-	
+
 				stream >> tmp >> tmp;
 
 				Joint* tmp_joint = new Joint;
@@ -227,7 +227,7 @@ Joint* BVH::loadJoint(std::istream& stream, Joint* parent) //default value of pa
 
 				stream >> tmp;
 				if (tmp == "OFFSET") {
-	
+
 					stream >> tmp_joint->offset.x
 						>> tmp_joint->offset.y
 						>> tmp_joint->offset.z;
@@ -253,7 +253,7 @@ Joint* BVH::loadJoint(std::istream& stream, Joint* parent) //default value of pa
 		std::cerr << "Error occurred: " << ex.what() << std::endl;
 		}
 
-	
+
 	//std::cout << " finish Joint" << std::endl;
 
 }
@@ -365,7 +365,7 @@ void BVH::moveJoint(Joint* joint, MOTION* motionData, int frame_starts_index)
 		}
 		if (channel & Yposition)
 		{
-			joint->transform = joint->transform * Matrix4f::translation(Vector3f(0, value, 0)); 
+			joint->transform = joint->transform * Matrix4f::translation(Vector3f(0, value, 0));
 		}
 		if (channel & Zposition)
 		{
@@ -404,7 +404,7 @@ void BVH::moveTo(unsigned frame)
 
 	// recursively transform skeleton
 	moveJoint(rootJoint, &motionData, start_index);
-	
+
 
 }
 
@@ -430,7 +430,7 @@ void BVH::drawSkeleton(bool drawSkeleton, int frame = 0) {
 		//std::cout << "child: "; child.print();
 
 		glLineWidth(2.0f);
-	
+
 		glBegin(GL_LINES);
 		glVertex3f(parent.x(), parent.y(), parent.z());
 		glVertex3f(child.x(), child.y(), child.z());
@@ -487,7 +487,7 @@ void BVH::bvhToVertices(Joint* joint, std::vector<Vector4f>& vertices, std::vect
 	Vector4f translatedVertex = joint->transform.getCol(3); //get the translation of the vertex
 	//joint->transform.getCol(3).print();
 
-	// pushing current 
+	// pushing current
 	vertices.push_back(translatedVertex);
 
 	// avoid putting root twice
@@ -556,9 +556,15 @@ void BVH::testOutput() const
 
 	int num_frames = motionData.num_frames;
 	int num_channels = motionData.num_motion_channels;
-	//klog.l() << 
+	//klog.l() <<
 
 
 }
+void BVH::init_mesh_collide(){
+    m_mesh.initiate_collide();
+}
 
+bool BVH::check_mesh_collide(){
+    return m_mesh.check_collide();
+}
 #endif
