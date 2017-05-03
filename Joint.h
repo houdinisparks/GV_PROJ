@@ -36,6 +36,7 @@ struct Joint
 	unsigned int num_channels = 0;  // num of channels joint has
 	short* channels_order = NULL;   // ordered list of channels
 	unsigned int channel_start = 0; // index of joint's channel data in motion array
+	std::vector<int> mesh_vertices;
 
 };
 

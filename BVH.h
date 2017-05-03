@@ -49,8 +49,13 @@ public:
 
 	void moveJoint(Joint * joint, MOTION * motionData, int frame_starts_index);
 
+	void moveJoint_Mesh(Joint * joint, MOTION * motionData, int frame_starts_index);
+
+
 	/** Loads motion data from a frame into local matrices */
 	void moveTo(unsigned frame) ;
+
+	void moveTo_Mesh(unsigned frame);
 
 	const Joint* getRootJoint() const { return rootJoint; }
 	unsigned getNumFrames() const { return motionData.num_frames; }
