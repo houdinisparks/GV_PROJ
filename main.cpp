@@ -222,8 +222,8 @@ namespace {
 		//glShadeModel(GL_SMOOTH);
 		//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-		//glEnable(GL_CULL_FACE);
-		//glCullFace(GL_BACK);
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_BACK);
 
 		// Clear to black
 		glClearColor(0.0156862f, 0.1215686f, 0.18823529f, 1.0f);

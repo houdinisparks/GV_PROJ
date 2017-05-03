@@ -345,10 +345,13 @@ void BVH::moveJoint(Joint* joint, MOTION* motionData, int frame_starts_index)
 	// which are read from motion data
 	for (int i = 0; i < joint->num_channels; i++)
 	{
+
+		//motion data is w.r.t to bind pose coordinates
+
 		// channel alias
 		const short& channel = joint->channels_order[i];
 
-		// extract value from motion data, each frame with respect to bind frame
+		// extract value from motion data, each frame with respect to parent
 		float value = motionData->data[start_index + i];
 
 		if (channel & Xposition)
@@ -408,7 +411,7 @@ void BVH::moveJoint_Mesh(Joint* joint, MOTION* motionData, int frame_starts_inde
 		const short& channel = joint->channels_order[i];
 
 		// extract value from motion data, each frame with respect to bind frame
-		//joint-> transforms are w.r.t to local coordinates, to world coordinates
+		//joint-> transforms are from local coordinates, to world coordinates
 		float value = motionData->data[start_index + i];
 
 		if (channel & Xposition)
@@ -504,19 +507,19 @@ void BVH::drawSkeleton(bool drawSkeleton, int frame = 0) {
 //for drawing the mesh
 void BVH::updateMesh() {
 	//klog.l("Mesh") << "updating mesh";
-	for (int i = 0; i < m_mesh.vecv.size(); i++)
+	for (int i = 0; i < m_mesh.vecv.size(); i++) //[vecv1 , vecv2 , vecv3 , ...]
 	{
 		Vector4f bind_vertex(m_mesh.vecv[i], 1.0f); //static
 		Vector4f updated_vertex(0.0f);
 		//klog.l("Mesh") << "1";
 		//world --> joint transforms
-		for (int j = 0; j < m_mesh.attachments[i].size(); j += 2)
+		for (int j = 0; j < m_mesh.attachments[i].size(); j += 2) //[ vecv1:[jtidx1,wght1, jtidx2,wght2
 		{
 			//wT1B1-1p
 			int jt_idx = m_mesh.attachments[i][j];
-			//klog.l("Mesh") << "2";
+			
 			float jt_weights = m_mesh.attachments[i][j + 1];
-			//klog.l("Mesh") << "3";
+			
 			Vector4f update_vertex = jt_weights *
 				(m_joints[jt_idx]->transform *
 					m_joints[jt_idx]->bindWorldToJointTransform * bind_vertex);
