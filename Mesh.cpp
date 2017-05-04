@@ -77,6 +77,7 @@ void Mesh::load(const char* filename)
 
 void Mesh::initiate_collide()
 {
+        std::cout << "ding" <<std::endl;
         collide_on = true;
 }
 
@@ -273,4 +274,3 @@ Vector2f Mesh::getYmaxmin(){
 //		}
 //	}
 //}
-

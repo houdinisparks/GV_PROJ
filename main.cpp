@@ -86,15 +86,11 @@ namespace {
 		case 'p':
 		{
 			particleOn += 1;
-			if (particleOn%3==0) {
+
+
+			if (particleOn %2 == 0) {
 				particleOn = 0;
 			}
-			cout << "Particle System: " << particleOn;
-
-			if (particleOn == 2) {
-				bvh.init_mesh_collide();
-			}
-
 			break;
 		}
 
@@ -174,20 +170,6 @@ namespace {
 	void initRendering()
 	{
 
-		// glEnable(GL_DEPTH_TEST);   // Depth testing must be turned on
-		// glEnable(GL_LIGHTING);     // Enable lighting calculations
-		// glEnable(GL_LIGHT0);       // Turn on light #0.
-        //
-		// glEnable(GL_NORMALIZE);
-        //
-		// // Setup polygon drawing
-		// glShadeModel(GL_SMOOTH);
-		// glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-        //
-		// glEnable(GL_CULL_FACE);
-		// glCullFace(GL_BACK);
-
-		// Clear to black
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	}
 
@@ -212,7 +194,6 @@ namespace {
 		//// THIS IS WHERE THE DRAW CODE GOES
 
 		particleSystem.drawPlane();
-     
 
 
 		// This draws the coordinate axes when you're rotating, to
@@ -270,15 +251,10 @@ namespace {
 			}
 		}
 
-		if (particleOn == 1) {
+        if (particleOn == 1) {
 
-			//klog.l("drawing") << "drawRain";
-			particleSystem.drawRain();
-		}
-		else if (particleOn == 2) {
-			//klog.l("drawing") << "drawSnow";
 
-			particleSystem.drawSnow();
+			particleSystem.drawSnow(bvh);
 		}
 
 
@@ -288,25 +264,6 @@ namespace {
 
 	void timerFunc(int t)
 	{
-		//cout << cur_frame << endl;
-		//bvh.drawSkeleton(true, cur_frame++);
-
-		//// Clear the rendering window
-		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-		//glMatrixMode(GL_MODELVIEW);
-		//glLoadIdentity();
-
-		//// Light color (RGBA)
-		//GLfloat Lt0diff[] = { 1.0,1.0,1.0,1.0 };
-		//GLfloat Lt0pos[] = { 3.0,3.0,5.0,1.0 };
-		//glLightfv(GL_LIGHT0, GL_DIFFUSE, Lt0diff);
-		//glLightfv(GL_LIGHT0, GL_POSITION, Lt0pos);
-
-		//glLoadMatrixf(camera.viewMatrix());
-
-
-		//glutSwapBuffers();
 
 		glutPostRedisplay();
 
@@ -344,7 +301,7 @@ int main( int argc, char* argv[] )
 
 	// Initialize OpenGL parameters.
 	initRendering();
-    particleSystem.initParticles_sys(bvh);
+    particleSystem.initParticles_sys();
 
 	// Setup BVH
 	//initSystem(argc, argv);gv

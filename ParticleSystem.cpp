@@ -27,9 +27,9 @@ void ParticleSystem::initParticles(int i) {
 }
 
 
-void ParticleSystem::initParticles_sys(const BVH &bvh) {
+void ParticleSystem::initParticles_sys() {
 	int x, z;
-	this->bvh = bvh;
+	// this->bvh = bvh;
 
 	glShadeModel(GL_SMOOTH);
 	//glClearColor(0.0, 0.0, 0.0, 0.0);
@@ -57,107 +57,8 @@ void ParticleSystem::initParticles_sys(const BVH &bvh) {
 	}
 }
 
-// For Rain
-void ParticleSystem::drawRain() {
-	float x, y, z;
-	for (loop = 0; loop < MAX_PARTICLES; loop = loop + 2) {
-		if (par_sys[loop].alive == true) {
-			x = par_sys[loop].xpos;
-			y = par_sys[loop].ypos;
-			z = par_sys[loop].zpos;
-
-			// Draw particles
-			glColor3f(0.5, 0.5, 1.0);
-			glBegin(GL_LINES);
-			glVertex3f(x, y, z);
-			glVertex3f(x, y + 0.5, z);
-			glEnd();
-
-			// Update values
-			//Move
-			// Adjust slowdown for speed!
-			par_sys[loop].ypos += par_sys[loop].vel / (slowdown * 1000);
-			par_sys[loop].vel += par_sys[loop].gravity;
-			// Decay
-			par_sys[loop].life -= par_sys[loop].fade;
-
-			if (par_sys[loop].ypos <= -10) {
-				par_sys[loop].life = -1.0;
-			}
-			//Revive
-			if (par_sys[loop].life < 0.0) {
-				initParticles(loop);
-			}
-		}
-	}
-}
-
-// For Hail
-void ParticleSystem::drawHail() {
-	float x, y, z;
-
-	for (loop = 0; loop < MAX_PARTICLES; loop = loop + 2) {
-		if (par_sys[loop].alive == true) {
-			x = par_sys[loop].xpos;
-			y = par_sys[loop].ypos;
-			z = par_sys[loop].zpos;
-
-			// Draw particles
-			glColor3f(0.8, 0.8, 0.9);
-			glBegin(GL_QUADS);
-			// Front
-			glVertex3f(x - hailsize, y - hailsize, z + hailsize); // lower left
-			glVertex3f(x - hailsize, y + hailsize, z + hailsize); // upper left
-			glVertex3f(x + hailsize, y + hailsize, z + hailsize); // upper right
-			glVertex3f(x + hailsize, y - hailsize, z + hailsize); // lower left
-																  //Left
-			glVertex3f(x - hailsize, y - hailsize, z + hailsize);
-			glVertex3f(x - hailsize, y - hailsize, z - hailsize);
-			glVertex3f(x - hailsize, y + hailsize, z - hailsize);
-			glVertex3f(x - hailsize, y + hailsize, z + hailsize);
-			// Back
-			glVertex3f(x - hailsize, y - hailsize, z - hailsize);
-			glVertex3f(x - hailsize, y + hailsize, z - hailsize);
-			glVertex3f(x + hailsize, y + hailsize, z - hailsize);
-			glVertex3f(x + hailsize, y - hailsize, z - hailsize);
-			//Right
-			glVertex3f(x + hailsize, y + hailsize, z + hailsize);
-			glVertex3f(x + hailsize, y + hailsize, z - hailsize);
-			glVertex3f(x + hailsize, y - hailsize, z - hailsize);
-			glVertex3f(x + hailsize, y - hailsize, z + hailsize);
-			//Top
-			glVertex3f(x - hailsize, y + hailsize, z + hailsize);
-			glVertex3f(x - hailsize, y + hailsize, z - hailsize);
-			glVertex3f(x + hailsize, y + hailsize, z - hailsize);
-			glVertex3f(x + hailsize, y + hailsize, z + hailsize);
-			//Bottom
-			glVertex3f(x - hailsize, y - hailsize, z + hailsize);
-			glVertex3f(x - hailsize, y - hailsize, z - hailsize);
-			glVertex3f(x + hailsize, y - hailsize, z - hailsize);
-			glVertex3f(x + hailsize, y - hailsize, z + hailsize);
-			glEnd();
-
-			// Update values
-			//Move
-			if (par_sys[loop].ypos <= -10) {
-				par_sys[loop].vel = par_sys[loop].vel * -1.0;
-			}
-			par_sys[loop].ypos += par_sys[loop].vel / (slowdown * 1000); // * 1000
-			par_sys[loop].vel += par_sys[loop].gravity;
-
-			// Decay
-			par_sys[loop].life -= par_sys[loop].fade;
-
-			//Revive
-			if (par_sys[loop].life < 0.0) {
-				initParticles(loop);
-			}
-		}
-	}
-}
-
 // For Snow
-void ParticleSystem::drawSnow() {
+void ParticleSystem::drawSnow(BVH &bvh) {
 
 	glBegin(GL_POINTS);
 	float x, y, z;
@@ -184,8 +85,8 @@ void ParticleSystem::drawSnow() {
 
 			if (par_sys[loop].ypos <= 50.0 && !bvh.check_mesh_collide()) {
 				bvh.init_mesh_collide();
-
 			}
+            
 			//collision with floor
 			if (par_sys[loop].ypos <= 0.0) {
 				int zi = z + 100;
