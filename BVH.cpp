@@ -67,7 +67,7 @@ void BVH::loadBVH(const std::string& filename)
 {
 	std::fstream file;
 	char buffer[8192];
-	//file.rdbuf()->pubsetbuf(buffer, 8192);
+
 
 	file.open(filename.c_str(), std::ios_base::in);
 
@@ -108,7 +108,7 @@ void BVH::loadHierarchy(std::istream& stream)
 	}
 
 
-	//std::cout << " finish heirarchy" << std::endl;
+
 
 }
 /*
@@ -329,8 +329,6 @@ void BVH::drawSkeleton(bool drawSkeleton, int frame = 0) {
 
 	moveTo(frame);
 	bvhToVertices(rootJoint, skeletalVertices, skeletalIndices, 0);
-	//std::cout << "no sv " << skeletalVertices.size() << std::endl; // 30
-	//std::cout << "no si " << skeletalIndices.size() << std::endl; // 58
 	glBegin(GL_LINES);
 	for (int i = 0; i < skeletalIndices.size(); i += 2)
 	{
@@ -339,8 +337,7 @@ void BVH::drawSkeleton(bool drawSkeleton, int frame = 0) {
 
 		Vector3f parent = skeletalVertices[parent_idx].xyz();
 		Vector3f child = skeletalVertices[child_idx].xyz();
-		//std::cout << "parent: " ; parent.print();
-		//std::cout << "child: "; child.print();
+
 
 		glLineWidth(2.0f);
 		glVertex3f(parent.x(), parent.y(), parent.z());
@@ -369,8 +366,7 @@ void BVH::precomputeVerticesForEachFrame() {
 		{
 			Vector4f bind_vertex(m_mesh.vecv[i], 1.0f); //static
 			Vector4f updated_vertex(0.0f);
-			//klog.l("Mesh") << "1";
-			//world --> joint transforms
+
 			for (int j = 0; j < m_mesh.attachments[i].size(); j += 2) //[ vecv1:[jtidx1,wght1, jtidx2,wght2
 			{
 				//wT1B1-1p
@@ -381,13 +377,12 @@ void BVH::precomputeVerticesForEachFrame() {
 				Vector4f update_vertex = jt_weights *
 					(m_joints[jt_idx]->transform *
 						m_joints[jt_idx]->bindWorldToJointTransform * bind_vertex);
-				//klog.l("weights") << jt_idx << " " << jt_weights;
+
 				updated_vertex = updated_vertex + update_vertex;
-				//klog.l("Mesh") << "4";
+
 			}
 	
 			verts_in_one_frame.push_back(updated_vertex.xyz());
-			//m_mesh.currentVertices[i] = updated_vertex.xyz();
 		}
 		
 		m_mesh_vertices_all_frames.push_back(verts_in_one_frame);
@@ -537,8 +532,7 @@ void BVH::printJoint(Joint* joint) const
 	klog.l("joint")  << joint->name << joint->channel_start;
 	klog.l(joint->name) << "WtoJ \n";
 	joint->bindWorldToJointTransform.print();
-	//klog.l(joint->name) << "JtoW \n";
-	//joint->transform.print();
+
 
 	for (std::vector<Joint*>::const_iterator ct = joint->children.begin();
 		ct != joint->children.end(); ++ct)
@@ -548,11 +542,7 @@ void BVH::printJoint(Joint* joint) const
 			printJoint(_tmp);
 	}
 
-	//for (int i = 0; i < m_joints.size(); i++)
-	//{
-	//	std::cout << m_joints[i]->name << " ";
-	//}
-	//std::cout << std::endl;
+
 }
 
 
@@ -569,7 +559,7 @@ void BVH::testOutput() const
 
 	int num_frames = motionData.num_frames;
 	int num_channels = motionData.num_motion_channels;
-	//klog.l() <<
+
 
 
 }

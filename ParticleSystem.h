@@ -32,7 +32,6 @@ public:
 	}particles;
 
 	particles par_sys[MAX_PARTICLES]; 
-	BVH bvh;
 	float slowdown = 2.0;
 	float velocity = 0.0;
 	// float zoom = 0.0;
@@ -53,10 +52,8 @@ public:
 	float accum = 0.0;
 
 	void initParticles(int i);
-	void initParticles_sys(const BVH & bvh);
-	void drawRain();
-	void drawHail();
-	void drawSnow();
+	void initParticles_sys();
+	void drawSnow(BVH & bvh);
 	void drawPlane();
 	void arcballRotation(int endX, int endY);
 

@@ -27,12 +27,11 @@ void ParticleSystem::initParticles(int i) {
 }
 
 
-void ParticleSystem::initParticles_sys(const BVH &bvh) {
+void ParticleSystem::initParticles_sys() {
 	int x, z;
-	this->bvh = bvh;
+
 
 	glShadeModel(GL_SMOOTH);
-	//glClearColor(0.0, 0.0, 0.0, 0.0);
 	glClearDepth(1.0);
 	glEnable(GL_DEPTH_TEST);
 
@@ -57,110 +56,9 @@ void ParticleSystem::initParticles_sys(const BVH &bvh) {
 	}
 }
 
-// For Rain
-void ParticleSystem::drawRain() {
-	float x, y, z;
-	//pglDisable(GL_LIGHTING);
-	for (loop = 0; loop < MAX_PARTICLES; loop = loop + 2) {
-		if (par_sys[loop].alive == true) {
-			x = par_sys[loop].xpos;
-			y = par_sys[loop].ypos;
-			z = par_sys[loop].zpos;
-
-			// Draw particles
-			glColor3f(0.5, 0.5, 1.0);
-			glBegin(GL_LINES);
-			glVertex3f(x, y, z);
-			glVertex3f(x, y + 0.5, z);
-			glEnd();
-
-			// Update values
-			//Move
-			// Adjust slowdown for speed!
-			par_sys[loop].ypos += par_sys[loop].vel / (slowdown * 1000);
-			par_sys[loop].vel += par_sys[loop].gravity;
-			// Decay
-			par_sys[loop].life -= par_sys[loop].fade;
-
-			if (par_sys[loop].ypos <= -10) {
-				par_sys[loop].life = -1.0;
-			}
-			//Revive
-			if (par_sys[loop].life < 0.0) {
-				initParticles(loop);
-			}
-		}
-	}
-}
-
-// For Hail
-void ParticleSystem::drawHail() {
-	float x, y, z;
-	//glDisable(GL_LIGHTING);
-	glBegin(GL_QUADS);
-	for (loop = 0; loop < MAX_PARTICLES; loop = loop + 2) {
-		if (par_sys[loop].alive == true) {
-			x = par_sys[loop].xpos;
-			y = par_sys[loop].ypos;
-			z = par_sys[loop].zpos;
-
-			// Draw particles
-			glColor3f(0.8, 0.8, 0.9);
-			
-			// Front
-			glVertex3f(x - hailsize, y - hailsize, z + hailsize); // lower left
-			glVertex3f(x - hailsize, y + hailsize, z + hailsize); // upper left
-			glVertex3f(x + hailsize, y + hailsize, z + hailsize); // upper right
-			glVertex3f(x + hailsize, y - hailsize, z + hailsize); // lower left
-																  //Left
-			glVertex3f(x - hailsize, y - hailsize, z + hailsize);
-			glVertex3f(x - hailsize, y - hailsize, z - hailsize);
-			glVertex3f(x - hailsize, y + hailsize, z - hailsize);
-			glVertex3f(x - hailsize, y + hailsize, z + hailsize);
-			// Back
-			glVertex3f(x - hailsize, y - hailsize, z - hailsize);
-			glVertex3f(x - hailsize, y + hailsize, z - hailsize);
-			glVertex3f(x + hailsize, y + hailsize, z - hailsize);
-			glVertex3f(x + hailsize, y - hailsize, z - hailsize);
-			//Right
-			glVertex3f(x + hailsize, y + hailsize, z + hailsize);
-			glVertex3f(x + hailsize, y + hailsize, z - hailsize);
-			glVertex3f(x + hailsize, y - hailsize, z - hailsize);
-			glVertex3f(x + hailsize, y - hailsize, z + hailsize);
-			//Top
-			glVertex3f(x - hailsize, y + hailsize, z + hailsize);
-			glVertex3f(x - hailsize, y + hailsize, z - hailsize);
-			glVertex3f(x + hailsize, y + hailsize, z - hailsize);
-			glVertex3f(x + hailsize, y + hailsize, z + hailsize);
-			//Bottom
-			glVertex3f(x - hailsize, y - hailsize, z + hailsize);
-			glVertex3f(x - hailsize, y - hailsize, z - hailsize);
-			glVertex3f(x + hailsize, y - hailsize, z - hailsize);
-			glVertex3f(x + hailsize, y - hailsize, z + hailsize);
-			
-
-			// Update values
-			//Move
-			if (par_sys[loop].ypos <= -10) {
-				par_sys[loop].vel = par_sys[loop].vel * -1.0;
-			}
-			par_sys[loop].ypos += par_sys[loop].vel / (slowdown * 1000); // * 1000
-			par_sys[loop].vel += par_sys[loop].gravity;
-
-			// Decay
-			par_sys[loop].life -= par_sys[loop].fade;
-
-			//Revive
-			if (par_sys[loop].life < 0.0) {
-				initParticles(loop);
-			}
-		}
-	}
-	glEnd();
-}
 
 // For Snow
-void ParticleSystem::drawSnow() {
+void ParticleSystem::drawSnow(BVH & bvh) {
 	
 	glBegin(GL_POINTS);
 	float x, y, z;
@@ -258,29 +156,23 @@ void ParticleSystem::drawPlane() {
 		// along x - y const
 		for (int j = -100; j + 1 < 100; j++) {
 			
-			//glMaterialfv(GL_BACK, GL_AMBIENT_AND_DIFFUSE, ground_colors[i + 100][j + 100]);
-			//glMaterialfv(GL_BACK, GL_SPECULAR, ground_colors[i + 100][j + 100]);
 			glColor3fv(ground_colors[i + 100][j + 100]);
 			glVertex3f(ground_points[j + 100][i + 100][0],
 				ground_points[j + 100][i + 100][1],
 				ground_points[j + 100][i + 100][2]);
 
-			//glMaterialfv(GL_BACK, GL_AMBIENT_AND_DIFFUSE, ground_colors[i + 100][j + 1 + 100]);
-			//glMaterialfv(GL_BACK, GL_SPECULAR, ground_colors[i + 100][j + 1 + 100]);
 			glColor3fv(ground_colors[i + 100][j + 1 + 100]);
 			glVertex3f(ground_points[j + 1 + 100][i + 100][0],
 				ground_points[j + 1 + 100][i + 100][1],
 				ground_points[j + 1 + 100][i + 100][2]);
 
-			//glMaterialfv(GL_BACK, GL_AMBIENT_AND_DIFFUSE, ground_colors[i + 1 + 100][j + 1 + 100]);
-			//glMaterialfv(GL_BACK, GL_SPECULAR, ground_colors[i + 1 + 100][j + 1 + 100]);
+
 			glColor3fv(ground_colors[i + 1 + 100][j + 1 + 100]);
 			glVertex3f(ground_points[j + 1 + 100][i + 1 + 100][0],
 				ground_points[j + 1 + 100][i + 1 + 100][1],
 				ground_points[j + 1 + 100][i + 1 + 100][2]);
 
-			//glMaterialfv(GL_BACK, GL_AMBIENT_AND_DIFFUSE, ground_colors[i + 1 + 100][j + 100]);
-			//glMaterialfv(GL_BACK, GL_SPECULAR, ground_colors[i + 1 + 100][j + 100]);
+
 			glColor3fv(ground_colors[i + 1 + 100][j + 100]);
 			glVertex3f(ground_points[j + 100][i + 1 + 100][0],
 				ground_points[j + 100][i + 1 + 100][1],
@@ -294,14 +186,12 @@ void ParticleSystem::drawPlane() {
 				ground_points[j + 100][i + 1 + 100][1],
 				ground_points[j + 100][i + 1 + 100][2]);
 
-			//glNormal3fv(Vector3f::cross(-1*(v2 - v1), (v3 - v1)));
 		}
 
 
 	}
 	glEnd();
-	//glDisable(GL_LIGHTING);     // Enable lighting calculations
-	//glDisable(GL_LIGHT0);       // Turn on light #0.
+
 	glCullFace(GL_BACK);
 
 	//glEnable(GL_CULL_FACE);

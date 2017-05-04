@@ -31,7 +31,7 @@
 
 // toggle views
 bool skeleOn = true;
-int particleOn = 0; //toggle 0 - off, 1 - rain , 2 - snow
+int particleOn = 0; //toggle 0 - off, 1 - snow
 int frameRate = 8;
 
 using namespace std;
@@ -86,15 +86,12 @@ namespace {
 		case 'p':
 		{
 			particleOn += 1;
-			if (particleOn % 3 == 0) {
-				particleOn = 0;
-			}
+
 			klog.l("Toggle Keys") << "Particle System: " << particleOn;
 
-			if (particleOn == 2) {
-				bvh.init_mesh_collide();
+			if (particleOn %2 == 0) {
+				particleOn = 0;
 			}
-
 			break;
 		}
 
@@ -288,8 +285,7 @@ namespace {
 		else {
 
 			if (skeleOn) {
-
-				;				bvh.drawSkeleton(true, cur_frame++);
+				bvh.drawSkeleton(true, cur_frame++);
 
 			}
 			else {
@@ -299,14 +295,7 @@ namespace {
 		}
 
 		if (particleOn == 1) {
-
-			//klog.l("drawing") << "drawRain";
-			particleSystem.drawRain();
-		}
-		else if (particleOn == 2) {
-			//klog.l("drawing") << "drawSnow";
-
-			particleSystem.drawSnow();
+			particleSystem.drawSnow(bvh);
 		}
 
 
@@ -316,25 +305,6 @@ namespace {
 
 	void timerFunc(int t)
 	{
-		//cout << cur_frame << endl;
-		//bvh.drawSkeleton(true, cur_frame++);
-
-		//// Clear the rendering window
-		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-		//glMatrixMode(GL_MODELVIEW);
-		//glLoadIdentity();
-
-		//// Light color (RGBA)
-		//GLfloat Lt0diff[] = { 1.0,1.0,1.0,1.0 };
-		//GLfloat Lt0pos[] = { 3.0,3.0,5.0,1.0 };
-		//glLightfv(GL_LIGHT0, GL_DIFFUSE, Lt0diff);
-		//glLightfv(GL_LIGHT0, GL_POSITION, Lt0pos);
-
-		//glLoadMatrixf(camera.viewMatrix());
-
-
-		//glutSwapBuffers();
 
 		glutPostRedisplay();
 
@@ -372,15 +342,11 @@ int main(int argc, char* argv[])
 
 	// Initialize OpenGL parameters.
 	initRendering();
-	particleSystem.initParticles_sys(bvh);
+	particleSystem.initParticles_sys();
 
 	// Setup BVH
-	//initSystem(argc, argv);gv
+
 	bvh.load(argv[1], argv[2], argv[3]);
-	//bvh.loadBVH(argv[1]);
-	//bvh.loadMesh(argv[1]);
-	//bvh.loadAttachments(argv[3]);
-	//bvh.testOutput();
 
 	// Set up callback functions for key presses
 	glutKeyboardFunc(keyboardFunc); // Handles "normal" ascii symbols
@@ -404,51 +370,3 @@ int main(int argc, char* argv[])
 
 	return 0;
 }
-
-
-
-//------------------------------------------------------------------
-//------------------------------------------------------------------
-//STASH OF OLD CODES HERE!
-
-// Initialize the controls.  You have to define a ModelerControl
-// for every variable name that you define in the enumeration.
-
-// The constructor for a ModelerControl takes the following arguments:
-// - text label in user interface
-// - minimum slider value
-// - maximum slider value
-// - step size for slider
-// - initial slider value
-
-//const int NUM_JOINTS = 18;
-
-
-//REMOVED 1) MODELERCONTROL
-
-/*ModelerControl controls[ NUM_JOINTS*3 ];
-string jointNames[NUM_JOINTS]={ "Root", "Chest", "Waist", "Neck", "Right hip", "Right leg", "Right knee", "Right foot", "Left hip", "Left leg", "Left knee", "Left foot", "Right collarbone", "Right shoulder", "Right elbow", "Left collarbone", "Left shoulder", "Left elbow" };*/
-
-//for(unsigned int i = 0; i < NUM_JOINTS; i++)
-//{
-//	char buf[255];
-//	sprintf(buf, "%s X", jointNames[i].c_str());
-//	controls[i*3] = ModelerControl(buf, -M_PI, M_PI, 0.1f, 0);
-//	sprintf(buf, "%s Y", jointNames[i].c_str());
-//	controls[i*3+1] = ModelerControl(buf, -M_PI, M_PI, 0.1f, 0);
-//	sprintf(buf, "%s Z", jointNames[i].c_str());
-//	controls[i*3+2] = ModelerControl(buf, -M_PI, M_PI, 0.1f, 0);
-//}
-
-//   ModelerApplication::Instance()->Init
-//(
-//	argc, argv,
-//	controls,
-//	NUM_JOINTS*3
-//);
-
-//   // Run the modeler application.
-//   int ret = ModelerApplication::Instance()->Run();
-
-//   // This line is reached when you close the program.
-//   delete ModelerApplication::Instance();

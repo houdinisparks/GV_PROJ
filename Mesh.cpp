@@ -69,9 +69,7 @@ void Mesh::load(const char* filename)
 	}
 	klog.l("Mesh") << "# of vertices" << vecv.size();
 
-	//cout << "number of faces: " << faces.size();
-	//cout << "  number of vertices: " << bindVertices.size() << endl;
-	// make a copy of the bind vertices as the current vertices
+
 	currentVertices = vecv;
 }
 
@@ -91,12 +89,7 @@ void Mesh::draw()
 	glEnable(GL_LIGHTING);     // Enable lighting calculations
 	glEnable(GL_LIGHT0);       // Turn on light #0.
 
-	//glEnable(GL_NORMALIZE);
 
-	//glShadeModel(GL_SMOOTH);
-
-	//glEnable(GL_CULL_FACE);
-	//glCullFace(GL_BACK);
 
 	glBegin(GL_TRIANGLES);
 
@@ -104,12 +97,7 @@ void Mesh::draw()
 	for (int i = 0; i < faces.size(); i++)
 	{
 		//int a,d,g are the indices of the vertices.
-        // if(collide_on){
-    	// 	float change = (float)(rand() % 1000000) / 1000000.f;
-        //     if(change < 0.000002){
-        //         faces_c[i] = Vector3f(1.0f,1.0f,1.0f);
-        //     }
-        // }
+
 
 		int a,d,g;
         a = faces[i][0];
@@ -123,10 +111,9 @@ void Mesh::draw()
 		Vector3f normal = Vector3f::cross(d_vertex - a_vertex, g_vertex - a_vertex).normalized();
 
         float y_center = (a_vertex[1] + d_vertex[1] + g_vertex[1])/3.f;
-        // std::cout << y_center <<" " <<ymax<<std::endl;
-        // float y_normal = 1.f/sqrt(2*M_PI*30*30)*exp(-(pow((y_center - ymax),2.0)/2*30*30));
+
 		float prob = exp(y_center) / ((exp(max_min[0]) - exp(max_min[1])) * 1000);
-        // std::cout << y_normal << std::endl;
+
 
         if(collide_on){
     		float change = (float)((rand() % 10000) / 10000.f);
@@ -256,22 +243,5 @@ Vector2f Mesh::getYmaxmin(){
 	return max_min;
 }
 
-//string line;
-//while (getline(infile, line)) {
-//	if (line != "") {
-//		vector<string> temp_stor = anonymous::split(line, ' ');
-//		string type = temp_stor[0];
 
-//		if (type == "v") {
-//			bindVertices.push_back(Vector3f(atof(temp_stor[1].c_str()),
-//				atof(temp_stor[2].c_str()),
-//				atof(temp_stor[3].c_str())));
-//		}
-
-//		else if (type == "f") {
-//			faces.push_back(Tuple3u(stoi(temp_stor[1]), stoi(temp_stor[2]), stoi(temp_stor[3])));
-
-//		}
-//	}
-//}
 
