@@ -1,0 +1,150 @@
+[33mcommit 02834f1fb4cc6ae291643c1c39c29140f5e49a58[m
+Author: yanyee <houdinisparks@gmail.com>
+Date:   Thu May 4 02:10:55 2017 +0800
+
+    added linker to .lib
+
+[33mcommit 1660e84ee2af56164050ed16f09698bf3586f85a[m
+Author: yanyee <houdinisparks@gmail.com>
+Date:   Wed May 3 17:14:25 2017 +0800
+
+    created new Particle System Class
+
+[33mcommit ee368ec58ea044ef4e381edc324c2842fe3f91d6[m
+Author: yanyee <houdinisparks@gmail.com>
+Date:   Tue May 2 17:00:30 2017 +0800
+
+    added .git ignore
+
+[33mcommit 2e5c4b299ebf798129e70cdf523a1a33908551a1[m
+Author: yanyee <houdinisparks@gmail.com>
+Date:   Wed Apr 19 01:56:25 2017 +0800
+
+    merged with looyi
+
+[33mcommit e515f635925b4954715e54754499245a540ad3fe[m
+Merge: 9164805 d228d55
+Author: yanyee <houdinisparks@gmail.com>
+Date:   Wed Apr 19 01:28:15 2017 +0800
+
+    finish merging
+
+[33mcommit 9164805dfaf84cb40be1ac494285271319f35010[m
+Author: yanyee <houdinisparks@gmail.com>
+Date:   Wed Apr 19 01:24:58 2017 +0800
+
+    mesh rendereed
+
+[33mcommit 068ab1d248e28e43cf3aff0da6a0d5f72ebde696[m
+Author: yanyee <houdinisparks@gmail.com>
+Date:   Tue Apr 18 23:59:31 2017 +0800
+
+    mesh rendered
+
+[33mcommit a22ab247542442fdf9f1d4be5b6983b55cf30642[m
+Author: yanyee <houdinisparks@gmail.com>
+Date:   Tue Apr 18 21:33:55 2017 +0800
+
+    added toggles for skeleton and mesh
+
+[33mcommit d228d5557c0da2c8d12b47be39980af36f6bd862[m
+Author: Yi Loo <iyool81@hotmail.com>
+Date:   Tue Apr 18 20:10:17 2017 +0800
+
+    expanded floor with snow collision
+
+[33mcommit 778d27ac3a708b73e479ae5ffbb17054965df7e0[m
+Author: yanyee <houdinisparks@gmail.com>
+Date:   Tue Apr 18 11:50:58 2017 +0800
+
+    added mesh, not animated yet
+
+[33mcommit f0fa0afc4ce0ddbfc9772650d2c1958649d54291[m
+Author: yanyee <houdinisparks@gmail.com>
+Date:   Mon Apr 17 19:27:55 2017 +0800
+
+    i m committed to this project
+
+[33mcommit 7151b09ef087d04e78c73d3884a5a0726750fe12[m
+Author: yanyee <houdinisparks@gmail.com>
+Date:   Mon Apr 17 10:40:03 2017 +0800
+
+    vc.db
+
+[33mcommit 8c5aaf79fee7ef62a00c78167ed8c54d11660d4c[m
+Merge: a4eab7b ad770ac
+Author: wong yan yee <houdinisparks@gmail.com>
+Date:   Mon Apr 17 19:07:08 2017 +0800
+
+    Merge pull request #4 from houdinisparks/looyi
+    
+    enabled particle system above animation skeleton
+
+[33mcommit ad770ac9542da2aefbc4b5ec95208613745bd0df[m
+Author: Yi Loo <iyool81@hotmail.com>
+Date:   Mon Apr 17 15:30:14 2017 +0800
+
+    enabled particle system above animation skeleton
+
+[33mcommit a4eab7b332fd38ac4c5f4f6bfde34f3c1b1bacf5[m
+Author: weiyang0 <lego_brick@hotmail.com>
+Date:   Sun Apr 16 16:43:15 2017 +0800
+
+    push .obj files
+
+[33mcommit 39b59cc02addb7b7f7aca8a575ea59fb25bf72e3[m
+Merge: 0eac054 4ea8349
+Author: wong yan yee <houdinisparks@gmail.com>
+Date:   Fri Apr 14 16:56:27 2017 +0800
+
+    Merge pull request #3 from houdinisparks/yy_bvh_loader
+    
+    removed unnecessary files
+
+[33mcommit 4ea8349f880058ff7f2604a7c4ef103d73f5ba40[m
+Author: yanyee <houdinisparks@gmail.com>
+Date:   Fri Apr 14 16:54:26 2017 +0800
+
+    removed unnecessary files
+
+[33mcommit 0eac05451502fdc4d7732a7d14afc26a4f0c510c[m
+Merge: fedbaaa efacdea
+Author: wong yan yee <houdinisparks@gmail.com>
+Date:   Fri Apr 14 16:46:31 2017 +0800
+
+    Merge pull request #2 from houdinisparks/yy_bvh_loader
+    
+    bvh loader is workinggit statusgit status yay. bvh data files are in …
+
+[33mcommit efacdea0d1af03ec906b836e88c240acbbdd73e3[m
+Author: yanyee <houdinisparks@gmail.com>
+Date:   Fri Apr 14 16:42:23 2017 +0800
+
+    bvh loader is workinggit statusgit status yay. bvh data files are in /data. laoad them as an argument
+
+[33mcommit fedbaaa0360ec2c6e32c2f4ae228ffe90eb8e1b6[m
+Merge: 346b494 9ce6e4e
+Author: wong yan yee <houdinisparks@gmail.com>
+Date:   Wed Apr 5 09:15:32 2017 +0800
+
+    Merge pull request #1 from houdinisparks/yy_bvh_loader
+    
+    Yy bvh loader
+
+[33mcommit 9ce6e4e399682bb45e8ba927ff73bd05a5cad9af[m
+Author: yanyee <houdinisparks@gmail.com>
+Date:   Wed Apr 5 09:11:11 2017 +0800
+
+    added animation, but still not showing correctly.
+
+[33mcommit ea60d6a5536574533599bda29d4f605a3722f61e[m
+Author: yanyee <houdinisparks@gmail.com>
+Date:   Tue Apr 4 00:30:56 2017 +0800
+
+    added bvh
+
+[33mcommit 346b4942e8f3ac4f15232afeb814c9e3fcd6dbdf[m
+Author: yanyee <houdinisparks@gmail.com>
+Date:   Mon Apr 3 19:40:56 2017 +0800
+
+    first commit: combined starter code from a2 and a3, removed slider ui and only axes remained

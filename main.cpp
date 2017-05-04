@@ -28,50 +28,12 @@
 #define WCY		480
 #define RAIN	0
 #define SNOW	1
-#define	HAIL	2
 
 // toggle views
 bool skeleOn = true;
 int particleOn = 0; //toggle 0 - off, 1 - rain , 2 - snow
 
-//float slowdown = 2.0;
-//float velocity = 0.0;
-//float zoom = 0.0;
-//float pan = 0.0;
-//float tilt = 0.0;
-//float hailsize = 0.1;
 
-//int loop;
-//int fall;
-//
-////floor colors
-//float r = 0.0;
-//float g = 1.0;
-//float b = 0.0;
-//float ground_points[200][200][3];
-//float ground_colors[200][200][4];
-//float accum = -10.0;
-
-//typedef struct {
-//  // Life
-//  bool alive;	// is the particle alive?
-//  float life;	// particle lifespan
-//  float fade; // decay
-//  // color
-//  float red;
-//  float green;
-//  float blue;
-//  // Position/direction
-//  float xpos;
-//  float ypos;
-//  float zpos;
-//  // Velocity/Direction, only goes down in y dir
-//  float vel;
-//  // Gravity
-//  float gravity;
-//}particles;
-
-// particles par_sys[MAX_PARTICLES];
 
 using namespace std;
 
@@ -88,6 +50,7 @@ namespace {
 
 	// Declarations of functions whose implementations occur later.
 
+
 	void keyboardFunc(unsigned char key, int x, int y);
 	void specialFunc(int key, int x, int y);
 	void mouseFunc(int button, int state, int x, int y);
@@ -95,6 +58,7 @@ namespace {
 	void reshapeFunc(int w, int h);
 	void drawScene(void);
 	void initRendering();
+
 
 
 	void keyboardFunc(unsigned char key, int x, int y)
@@ -111,32 +75,29 @@ namespace {
 			camera.SetCenter(Vector3f::ZERO);
 			break;
 		}
-		
+
 		case 's': //s key
 		{
 			skeleOn = !skeleOn;
-			cout << skeleOn;
+			cout << "Skeleton: " << skeleOn;
+
 			break;
 		}
 		case 'p':
 		{
 			particleOn += 1;
-			if (particleOn > 2) {
+			if (particleOn%3==0) {
 				particleOn = 0;
 			}
+			cout << "Particle System: " << particleOn;
+
+			if (particleOn == 2) {
+				bvh.init_mesh_collide();
+			}
+
 			break;
 		}
 
-		//case 'w': //wireframe
-		//{
-		//	system->isWireframed = !system->isWireframed;
-		//	break;
-		//}
-		//case 'm':
-		//{
-		//	system->isMoving = !system->isMoving;
-		//	break;
-		//}
 
 		default:
 			cout << "Unhandled key press " << key << "." << endl;
@@ -212,30 +173,28 @@ namespace {
 	// Initialize OpenGL's rendering modes
 	void initRendering()
 	{
-		//glEnable(GL_DEPTH_TEST);   // Depth testing must be turned on
-		//glEnable(GL_LIGHTING);     // Enable lighting calculations
-		//glEnable(GL_LIGHT0);       // Turn on light #0.
 
-		//glEnable(GL_NORMALIZE);
-
-		// Setup polygon drawing
-		//glShadeModel(GL_SMOOTH);
-		//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
-		glEnable(GL_CULL_FACE);
-		glCullFace(GL_BACK);
+		// glEnable(GL_DEPTH_TEST);   // Depth testing must be turned on
+		// glEnable(GL_LIGHTING);     // Enable lighting calculations
+		// glEnable(GL_LIGHT0);       // Turn on light #0.
+        //
+		// glEnable(GL_NORMALIZE);
+        //
+		// // Setup polygon drawing
+		// glShadeModel(GL_SMOOTH);
+		// glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        //
+		// glEnable(GL_CULL_FACE);
+		// glCullFace(GL_BACK);
 
 		// Clear to black
-		glClearColor(0.0156862f, 0.1215686f, 0.18823529f, 1.0f);
+		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	}
 
 	// This function is responsible for displaying the object.
 	// it is called everytime whenever the window needs redrawing
 	void drawScene(void)
 	{
-        // int i, j;
-        // float x, y, z;
-		//cout << " drawing scene" << endl;
 		// Clear the rendering window
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -250,12 +209,11 @@ namespace {
 
 		glLoadMatrixf(camera.viewMatrix());
 
-		//// THIS IS WHERE THE DRAW CODE GOES.
+		//// THIS IS WHERE THE DRAW CODE GOES
 
-		//drawSystem();
-		//x	cout << "bvh1";
 		particleSystem.drawPlane();
      
+
 
 		// This draws the coordinate axes when you're rotating, to
 		// keep yourself oriented.
@@ -290,8 +248,6 @@ namespace {
 			glPopMatrix();
 
 
-
-
 			if (skeleOn) {
 				bvh.drawSkeleton(true, cur_frame);
 
@@ -315,6 +271,7 @@ namespace {
 		}
 
 		if (particleOn == 1) {
+
 			//klog.l("drawing") << "drawRain";
 			particleSystem.drawRain();
 		}
@@ -323,6 +280,7 @@ namespace {
 
 			particleSystem.drawSnow();
 		}
+
 
 		// Dump the image to the screen.
 		glutSwapBuffers();
@@ -386,7 +344,7 @@ int main( int argc, char* argv[] )
 
 	// Initialize OpenGL parameters.
 	initRendering();
-    particleSystem.initParticles_sys();
+    particleSystem.initParticles_sys(bvh);
 
 	// Setup BVH
 	//initSystem(argc, argv);gv

@@ -26,7 +26,7 @@ public:
 	typedef struct MOTION
 	{
 		unsigned int num_frames;              // number of frames
-		unsigned int num_motion_channels = 0; // number of motion channels 
+		unsigned int num_motion_channels = 0; // number of motion channels
 		float* data = NULL;                   // motion float data array
 		unsigned* joint_channel_offsets;      // number of channels from beggining of hierarchy for i-th joint
 	} MOTION;
@@ -42,8 +42,8 @@ public:
 
 	BVH();
 	~BVH() {};
-	
-	// loading 
+
+	// loading
 
 	void printJoint( Joint*  joint) const;
 
@@ -71,7 +71,9 @@ public:
 	void loadAttachments(const char * attachmentFile);
 	void testOutput() const;
 	void drawSkeleton( bool drawSkeleton, int frame );
-	
+
+    void init_mesh_collide();
+    bool check_mesh_collide();
 
 
 private:
@@ -82,6 +84,3 @@ private:
 	MOTION motionData;
 	Mesh m_mesh;
 };
-
-
-

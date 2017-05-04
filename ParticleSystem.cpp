@@ -22,13 +22,14 @@ void ParticleSystem::initParticles(int i) {
 	par_sys[i].blue = 1.0;
 
 	par_sys[i].vel = velocity;
-	par_sys[i].gravity = -0.8;//-0.8;
+	par_sys[i].gravity = -0.8;
 
 }
 
 
-void ParticleSystem::initParticles_sys() {
+void ParticleSystem::initParticles_sys(const BVH &bvh) {
 	int x, z;
+	this->bvh = bvh;
 
 	glShadeModel(GL_SMOOTH);
 	//glClearColor(0.0, 0.0, 0.0, 0.0);
@@ -63,7 +64,7 @@ void ParticleSystem::drawRain() {
 		if (par_sys[loop].alive == true) {
 			x = par_sys[loop].xpos;
 			y = par_sys[loop].ypos;
-			z = par_sys[loop].zpos + zoom;
+			z = par_sys[loop].zpos;
 
 			// Draw particles
 			glColor3f(0.5, 0.5, 1.0);
@@ -99,7 +100,7 @@ void ParticleSystem::drawHail() {
 		if (par_sys[loop].alive == true) {
 			x = par_sys[loop].xpos;
 			y = par_sys[loop].ypos;
-			z = par_sys[loop].zpos + zoom;
+			z = par_sys[loop].zpos;
 
 			// Draw particles
 			glColor3f(0.8, 0.8, 0.9);
@@ -164,14 +165,15 @@ void ParticleSystem::drawSnow() {
 		if (par_sys[loop].alive == true) {
 			x = par_sys[loop].xpos;
 			y = par_sys[loop].ypos;
-			z = par_sys[loop].zpos + zoom;
+			z = par_sys[loop].zpos;
 
 			// Draw particles
 			glColor3f(1.0, 1.0, 1.0);
 			glPushMatrix();
 			glTranslatef(x, y, z);
-			glutSolidSphere(2, 16, 16);
+			glutSolidSphere(1, 16, 16);
 			glPopMatrix();
+
 
 			// Update values
 			//Move
@@ -180,7 +182,12 @@ void ParticleSystem::drawSnow() {
 			// Decay
 			par_sys[loop].life -= par_sys[loop].fade;
 
-			if (par_sys[loop].ypos <= -10) {
+			if (par_sys[loop].ypos <= 50.0 && !bvh.check_mesh_collide()) {
+				bvh.init_mesh_collide();
+
+			}
+			//collision with floor
+			if (par_sys[loop].ypos <= 0.0) {
 				int zi = z + 100;
 				int xi = x + 100;
 				int range_zi_minus;
@@ -211,8 +218,6 @@ void ParticleSystem::drawSnow() {
 				else {
 					range_xi_plus = xi + 3;
 				}
-
-				// std::cout << zi<<" "<<xi << std::endl;
 				for (int zzi = range_zi_minus; zzi <= range_zi_plus; ++zzi) {
 					for (int xxi = range_xi_minus; xxi <= range_xi_plus; ++xxi) {
 						ground_colors[zzi][xxi][0] = 1.0;
@@ -223,12 +228,6 @@ void ParticleSystem::drawSnow() {
 						}
 					}
 				}
-				// ground_colors[zi][xi][0] = 1.0;
-				// ground_colors[zi][xi][2] = 1.0;
-				// ground_colors[zi][xi][3] += 1.0;
-				// if (ground_colors[zi][xi][3] > 1.0) {
-				//   ground_points[xi][zi][1] += 0.1;
-				// }
 				par_sys[loop].life = -1.0;
 			}
 
@@ -242,6 +241,7 @@ void ParticleSystem::drawSnow() {
 }
 
 void ParticleSystem::drawPlane() {
+
 	glColor3f(r, g, b);
 	glBegin(GL_QUADS);
 	// along z - y const
@@ -251,19 +251,19 @@ void ParticleSystem::drawPlane() {
 			glColor3fv(ground_colors[i + 100][j + 100]);
 			glVertex3f(ground_points[j + 100][i + 100][0],
 				ground_points[j + 100][i + 100][1],
-				ground_points[j + 100][i + 100][2] + zoom);
+				ground_points[j + 100][i + 100][2]);
 			glColor3fv(ground_colors[i + 100][j + 1 + 100]);
 			glVertex3f(ground_points[j + 1 + 100][i + 100][0],
 				ground_points[j + 1 + 100][i + 100][1],
-				ground_points[j + 1 + 100][i + 100][2] + zoom);
+				ground_points[j + 1 + 100][i + 100][2]);
 			glColor3fv(ground_colors[i + 1 + 100][j + 1 + 100]);
 			glVertex3f(ground_points[j + 1 + 100][i + 1 + 100][0],
 				ground_points[j + 1 + 100][i + 1 + 100][1],
-				ground_points[j + 1 + 100][i + 1 + 100][2] + zoom);
+				ground_points[j + 1 + 100][i + 1 + 100][2]);
 			glColor3fv(ground_colors[i + 1 + 100][j + 100]);
 			glVertex3f(ground_points[j + 100][i + 1 + 100][0],
 				ground_points[j + 100][i + 1 + 100][1],
-				ground_points[j + 100][i + 1 + 100][2] + zoom);
+				ground_points[j + 100][i + 1 + 100][2]);
 		}
 
 

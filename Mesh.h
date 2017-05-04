@@ -19,7 +19,7 @@ class BVH;
 
 struct Mesh
 {
-	
+public:
 	// list of vertices from the OBJ file
 	// in the "bind pose"
 	std::vector< Vector3f > vecv; // bindV'ertices
@@ -28,7 +28,7 @@ struct Mesh
 	// referencing 3 vertices
 	std::vector< std::vector<int >> faces;
 	//std::vector<std::vector<unsigned> > vecf;
-
+    std::vector<Vector3f> faces_c;
 	//std::vector<Vector3f> vecn;
 
 	// current vertex positions after animation
@@ -45,19 +45,19 @@ struct Mesh
 	// 2.1.2. draw the current mesh.
 	void draw();
 
+    void initiate_collide();
 
+    bool check_collide();
 	// 2.2. Implement this method to load the per-vertex attachment weights
 	// this method should update m_mesh.attachments
 	void loadAttachments(const char *filename);
 
+    Vector2f getYmaxmin();
 
 
-
-
-	
+private:
+    bool collide_on = false;
 
 };
 
 #endif
-
-

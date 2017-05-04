@@ -1,5 +1,7 @@
 #pragma once
 
+#include "BVH.h"
+
 #define MAX_PARTICLES 1000
 #define WCX		640
 #define WCY		480
@@ -30,16 +32,17 @@ public:
 	}particles;
 
 	particles par_sys[MAX_PARTICLES]; 
-
+	BVH bvh;
 	float slowdown = 2.0;
 	float velocity = 0.0;
-	float zoom = 0.0;
+	// float zoom = 0.0;
 	float pan = 0.0;
 	float tilt = 0.0;
 	float hailsize = 0.1;
 
 	int loop;
 	int fall;
+	bool first = true;
 
 	//floor colors
 	float r = 0.0;
@@ -47,10 +50,10 @@ public:
 	float b = 0.0;
 	float ground_points[200][200][3];
 	float ground_colors[200][200][4];
-	float accum = -10.0;
+	float accum = 0.0;
 
 	void initParticles(int i);
-	void initParticles_sys();
+	void initParticles_sys(const BVH & bvh);
 	void drawRain();
 	void drawHail();
 	void drawSnow();
@@ -58,5 +61,6 @@ public:
 	void arcballRotation(int endX, int endY);
 
 private:
+	
 
 };
