@@ -48,30 +48,30 @@ public:
 	void printJoint( Joint*  joint) const;
 
 	void moveJoint(Joint * joint, MOTION * motionData, int frame_starts_index);
-
-	void moveJoint_Mesh(Joint * joint, MOTION * motionData, int frame_starts_index);
-
+	void loadMesh(const char * meshFile);
+	void loadAttachments(const char * attachmentFile);
+	void testOutput() const;
 
 	/** Loads motion data from a frame into local matrices */
 	void moveTo(unsigned frame) ;
-
-	void moveTo_Mesh(unsigned frame);
 
 	const Joint* getRootJoint() const { return rootJoint; }
 	unsigned getNumFrames() const { return motionData.num_frames; }
 
 
-	void updateMesh();
 
-	void drawMesh(bool drawMesh, int frame);
 
 	// Drawing the Skeleton
-	void bvhToVertices(Joint * joint, std::vector<Vector4f>& vertices, std::vector<int>& indices, int parentIndex);
-	void loadMesh(const char * meshFile);
-	void loadAttachments(const char * attachmentFile);
-	void testOutput() const;
+	void bvhToVertices(Joint * joint, std::vector<Vector4f>& vertices, std::vector<int>& indices, int parentIndex);;
 	void drawSkeleton( bool drawSkeleton, int frame );
 
+	//Drawing the Mesh
+	void precomputeVerticesForEachFrame();
+	void updateMesh(int frame);
+	void drawMesh(bool drawMesh, int frame);
+
+
+	//Check Mesh Collision
     void init_mesh_collide();
     bool check_mesh_collide();
 
@@ -83,4 +83,7 @@ private:
 	std::vector<Joint*> m_joints;
 	MOTION motionData;
 	Mesh m_mesh;
+	std::vector<std::vector<Vector3f>> m_mesh_vertices_all_frames; //[frame1:[v1, v2, v3], frame2 : [v1, v2, v3] ... ];
 };
+
+

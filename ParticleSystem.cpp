@@ -60,6 +60,7 @@ void ParticleSystem::initParticles_sys(const BVH &bvh) {
 // For Rain
 void ParticleSystem::drawRain() {
 	float x, y, z;
+	//pglDisable(GL_LIGHTING);
 	for (loop = 0; loop < MAX_PARTICLES; loop = loop + 2) {
 		if (par_sys[loop].alive == true) {
 			x = par_sys[loop].xpos;
@@ -95,7 +96,8 @@ void ParticleSystem::drawRain() {
 // For Hail
 void ParticleSystem::drawHail() {
 	float x, y, z;
-
+	//glDisable(GL_LIGHTING);
+	glBegin(GL_QUADS);
 	for (loop = 0; loop < MAX_PARTICLES; loop = loop + 2) {
 		if (par_sys[loop].alive == true) {
 			x = par_sys[loop].xpos;
@@ -104,7 +106,7 @@ void ParticleSystem::drawHail() {
 
 			// Draw particles
 			glColor3f(0.8, 0.8, 0.9);
-			glBegin(GL_QUADS);
+			
 			// Front
 			glVertex3f(x - hailsize, y - hailsize, z + hailsize); // lower left
 			glVertex3f(x - hailsize, y + hailsize, z + hailsize); // upper left
@@ -135,7 +137,7 @@ void ParticleSystem::drawHail() {
 			glVertex3f(x - hailsize, y - hailsize, z - hailsize);
 			glVertex3f(x + hailsize, y - hailsize, z - hailsize);
 			glVertex3f(x + hailsize, y - hailsize, z + hailsize);
-			glEnd();
+			
 
 			// Update values
 			//Move
@@ -154,11 +156,12 @@ void ParticleSystem::drawHail() {
 			}
 		}
 	}
+	glEnd();
 }
 
 // For Snow
 void ParticleSystem::drawSnow() {
-
+	
 	glBegin(GL_POINTS);
 	float x, y, z;
 	for (loop = 0; loop < MAX_PARTICLES; loop = loop + 2) {
@@ -241,32 +244,65 @@ void ParticleSystem::drawSnow() {
 }
 
 void ParticleSystem::drawPlane() {
-
+	//glDisable(GL_CULL_FACE);
 	glColor3f(r, g, b);
+	glCullFace(GL_FRONT);
+
 	glBegin(GL_QUADS);
 	// along z - y const
+	//glEnable(GL_LIGHTING);     // Enable lighting calculations
+	//glEnable(GL_LIGHT0);       // Turn on light #0.
+	//glMaterialf(GL_BACK, GL_SHININESS, 10.0f);
+
 	for (int i = -100; i + 1 < 100; i++) {
 		// along x - y const
 		for (int j = -100; j + 1 < 100; j++) {
+			
+			//glMaterialfv(GL_BACK, GL_AMBIENT_AND_DIFFUSE, ground_colors[i + 100][j + 100]);
+			//glMaterialfv(GL_BACK, GL_SPECULAR, ground_colors[i + 100][j + 100]);
 			glColor3fv(ground_colors[i + 100][j + 100]);
 			glVertex3f(ground_points[j + 100][i + 100][0],
 				ground_points[j + 100][i + 100][1],
 				ground_points[j + 100][i + 100][2]);
+
+			//glMaterialfv(GL_BACK, GL_AMBIENT_AND_DIFFUSE, ground_colors[i + 100][j + 1 + 100]);
+			//glMaterialfv(GL_BACK, GL_SPECULAR, ground_colors[i + 100][j + 1 + 100]);
 			glColor3fv(ground_colors[i + 100][j + 1 + 100]);
 			glVertex3f(ground_points[j + 1 + 100][i + 100][0],
 				ground_points[j + 1 + 100][i + 100][1],
 				ground_points[j + 1 + 100][i + 100][2]);
+
+			//glMaterialfv(GL_BACK, GL_AMBIENT_AND_DIFFUSE, ground_colors[i + 1 + 100][j + 1 + 100]);
+			//glMaterialfv(GL_BACK, GL_SPECULAR, ground_colors[i + 1 + 100][j + 1 + 100]);
 			glColor3fv(ground_colors[i + 1 + 100][j + 1 + 100]);
 			glVertex3f(ground_points[j + 1 + 100][i + 1 + 100][0],
 				ground_points[j + 1 + 100][i + 1 + 100][1],
 				ground_points[j + 1 + 100][i + 1 + 100][2]);
+
+			//glMaterialfv(GL_BACK, GL_AMBIENT_AND_DIFFUSE, ground_colors[i + 1 + 100][j + 100]);
+			//glMaterialfv(GL_BACK, GL_SPECULAR, ground_colors[i + 1 + 100][j + 100]);
 			glColor3fv(ground_colors[i + 1 + 100][j + 100]);
 			glVertex3f(ground_points[j + 100][i + 1 + 100][0],
 				ground_points[j + 100][i + 1 + 100][1],
 				ground_points[j + 100][i + 1 + 100][2]);
+
+			Vector3f v1(ground_points[j + 100][i + 100][0], ground_points[j + 100][i + 100][1],ground_points[j + 1 + 100][i + 100][2] );
+			Vector3f v2(ground_points[j + 1 + 100][i + 100][0],
+				ground_points[j + 1 + 100][i + 100][1],
+				ground_points[j + 1 + 100][i + 100][2]);
+			Vector3f v3(ground_points[j + 100][i + 1 + 100][0],
+				ground_points[j + 100][i + 1 + 100][1],
+				ground_points[j + 100][i + 1 + 100][2]);
+
+			//glNormal3fv(Vector3f::cross(-1*(v2 - v1), (v3 - v1)));
 		}
 
 
 	}
 	glEnd();
+	//glDisable(GL_LIGHTING);     // Enable lighting calculations
+	//glDisable(GL_LIGHT0);       // Turn on light #0.
+	glCullFace(GL_BACK);
+
+	//glEnable(GL_CULL_FACE);
 }

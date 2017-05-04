@@ -87,12 +87,19 @@ bool Mesh::check_collide()
 
 void Mesh::draw()
 {
+	//glEnable(GL_DEPTH_TEST);   // Depth testing must be turned on
+	glEnable(GL_LIGHTING);     // Enable lighting calculations
+	glEnable(GL_LIGHT0);       // Turn on light #0.
 
+	//glEnable(GL_NORMALIZE);
+
+	//glShadeModel(GL_SMOOTH);
+
+	//glEnable(GL_CULL_FACE);
+	//glCullFace(GL_BACK);
 
 	glBegin(GL_TRIANGLES);
-	glShadeModel(GL_SMOOTH);
-	glEnable(GL_CULL_FACE);
-	glCullFace(GL_FRONT_AND_BACK);
+
     Vector2f max_min = getYmaxmin();
 	for (int i = 0; i < faces.size(); i++)
 	{
@@ -127,55 +134,49 @@ void Mesh::draw()
                 faces_c[i] = Vector3f(1.0f,1.0f,1.0f);
             }
         }
+
+		glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, faces_c[i]);
+		glMaterialfv(GL_FRONT, GL_SPECULAR, faces_c[i]);
+		glMaterialf(GL_FRONT, GL_SHININESS, 10.0f);
+
 		//int b,e,h are the respective normals. however, we only need to generate one normal per triangle.
-
-		glNormal3d(normal[0], normal[1], normal[2]);
-        glColor3f(faces_c[i][0],faces_c[i][1],faces_c[i][2]);
-        // glColor3f(0.5f,0.5f,0.5f);
-		glVertex3d(a_vertex[0], a_vertex[1], a_vertex[2]);
-        glColor3f(faces_c[i][0],faces_c[i][1],faces_c[i][2]);
-        // glColor3f(0.5f, 0.5f, 0.5f);
-
-		glVertex3d(d_vertex[0], d_vertex[1], d_vertex[2]);
-        glColor3f(faces_c[i][0],faces_c[i][1],faces_c[i][2]);
-        // glColor3f(0.5f, 0.5f, 0.5f);
-
-
-		glVertex3d(g_vertex[0], g_vertex[1], g_vertex[2]);
-
-		if (faces[i].size() == 4) {
-			//int a,d,g are the indices of the vertices.
-			int a = faces[i][0];
-			int d = faces[i][2];
-			int g = faces[i][3];
-
-			//minus 1 because the faces index vertices and normals from 1
-			Vector3f a_vertex = currentVertices[a - 1];
-			Vector3f d_vertex = currentVertices[d - 1];
-			Vector3f g_vertex = currentVertices[g - 1];
-			normal = Vector3f::cross(d_vertex - a_vertex, g_vertex - a_vertex).normalized();
-
-			//int b,e,h are the respective normals. however, we only need to generate one normal per triangle.
+		if (faces_c[i][0] == 1.0f && faces_c[i][1] == 1.0f) {
+			//glColor3f(faces_c[i][0], faces_c[i][1], faces_c[i][2]);
 
 			glNormal3d(normal[0], normal[1], normal[2]);
-            glColor3f(faces_c[i][0],faces_c[i][1],faces_c[i][2]);
+			glVertex3f(a_vertex[0], a_vertex[1], a_vertex[2]);
+			glVertex3f(d_vertex[0], d_vertex[1], d_vertex[2]);
+			glVertex3f(g_vertex[0], g_vertex[1], g_vertex[2]);
 
-			glVertex3d(a_vertex[0], a_vertex[1], a_vertex[2]);
-			glColor3f(faces_c[i][0],faces_c[i][1],faces_c[i][2]);
+			if (faces[i].size() == 4) {
+				//int a,d,g are the indices of the vertices.
+				int a = faces[i][0];
+				int d = faces[i][2];
+				int g = faces[i][3];
 
-			glVertex3d(d_vertex[0], d_vertex[1], d_vertex[2]);
-			glColor3f(faces_c[i][0],faces_c[i][1],faces_c[i][2]);
+				//minus 1 because the faces index vertices and normals from 1
+				Vector3f a_vertex = currentVertices[a - 1];
+				Vector3f d_vertex = currentVertices[d - 1];
+				Vector3f g_vertex = currentVertices[g - 1];
+				normal = Vector3f::cross(d_vertex - a_vertex, g_vertex - a_vertex).normalized();
+
+				//int b,e,h are the respective normals. however, we only need to generate one normal per triangle.
+
+				glNormal3f(normal[0], normal[1], normal[2]);
+				glVertex3f(a_vertex[0], a_vertex[1], a_vertex[2]);
+				glVertex3f(d_vertex[0], d_vertex[1], d_vertex[2]);
+				glVertex3f(g_vertex[0], g_vertex[1], g_vertex[2]);
 
 
-			glVertex3d(g_vertex[0], g_vertex[1], g_vertex[2]);
-
-
+			}
 		}
+		
 
 	}
 	glEnd();
 
-
+	glDisable(GL_LIGHTING);     // Enable lighting calculations
+	glDisable(GL_LIGHT0);       // Turn on light #0.
 
 }
 

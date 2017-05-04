@@ -18,7 +18,7 @@
 #include <vecmath.h>
 #include "camera.h"
 #include <string>
-#include <BVH.h>
+#include "BVH.h"
 #include "ParticleSystem.h"
 
 //#include "modelerapp.h"
@@ -32,8 +32,7 @@
 // toggle views
 bool skeleOn = true;
 int particleOn = 0; //toggle 0 - off, 1 - rain , 2 - snow
-
-
+int frameRate = 8;
 
 using namespace std;
 
@@ -58,6 +57,7 @@ namespace {
 	void reshapeFunc(int w, int h);
 	void drawScene(void);
 	void initRendering();
+	void timerFunc(int i);
 
 
 
@@ -79,17 +79,17 @@ namespace {
 		case 's': //s key
 		{
 			skeleOn = !skeleOn;
-			cout << "Skeleton: " << skeleOn;
+			klog.l("Toggle Keys") << "Skeleton: " << skeleOn;
 
 			break;
 		}
 		case 'p':
 		{
 			particleOn += 1;
-			if (particleOn%3==0) {
+			if (particleOn % 3 == 0) {
 				particleOn = 0;
 			}
-			cout << "Particle System: " << particleOn;
+			klog.l("Toggle Keys") << "Particle System: " << particleOn;
 
 			if (particleOn == 2) {
 				bvh.init_mesh_collide();
@@ -112,9 +112,29 @@ namespace {
 	{
 		switch (key)
 		{
-
+		case GLUT_KEY_LEFT: {
+			if (frameRate > 2) {
+				frameRate--;
+				klog.l("Toggle Keys") << "Frame Rate: " << frameRate;
+				glutTimerFunc(frameRate, timerFunc, frameRate);
+			}
+			break;
 		}
-		//glutPostRedisplay();
+
+
+		case GLUT_KEY_RIGHT:
+		{
+			frameRate++;
+			glutTimerFunc(frameRate, timerFunc, frameRate);
+			klog.l("Toggle Keys") << "Frame Rate: " << frameRate;
+			break;
+		}
+
+		default:
+			cout << "Unhandled key press " << key << "." << endl;
+		}
+		glutPostRedisplay();
+
 	}
 
 	//  Called when mouse button is pressed.
@@ -173,28 +193,36 @@ namespace {
 	// Initialize OpenGL's rendering modes
 	void initRendering()
 	{
+		//to draw the mesh. disable lighting when drawing the particles.
 
-		// glEnable(GL_DEPTH_TEST);   // Depth testing must be turned on
-		// glEnable(GL_LIGHTING);     // Enable lighting calculations
-		// glEnable(GL_LIGHT0);       // Turn on light #0.
-        //
-		// glEnable(GL_NORMALIZE);
-        //
-		// // Setup polygon drawing
-		// glShadeModel(GL_SMOOTH);
-		// glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-        //
-		// glEnable(GL_CULL_FACE);
-		// glCullFace(GL_BACK);
+		glEnable(GL_DEPTH_TEST);   // Depth testing must be turned on
+		//glEnable(GL_LIGHTING);     // Enable lighting calculations
+		//glEnable(GL_LIGHT0);       // Turn on light #0.
+
+		glEnable(GL_NORMALIZE);
+		////
+		//// // Setup polygon drawing
+		////glShadeModel(GL_SMOOTH);
+		////glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		////
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_BACK);
 
 		// Clear to black
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+
+		
 	}
 
 	// This function is responsible for displaying the object.
 	// it is called everytime whenever the window needs redrawing
 	void drawScene(void)
 	{
+		if (cur_frame > bvh.getNumFrames() - 1)
+		{
+			cur_frame = 0;
+		}
+
 		// Clear the rendering window
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -212,7 +240,7 @@ namespace {
 		//// THIS IS WHERE THE DRAW CODE GOES
 
 		particleSystem.drawPlane();
-     
+
 
 
 		// This draws the coordinate axes when you're rotating, to
@@ -261,7 +289,7 @@ namespace {
 
 			if (skeleOn) {
 
-;				bvh.drawSkeleton(true, cur_frame++);
+				;				bvh.drawSkeleton(true, cur_frame++);
 
 			}
 			else {
@@ -310,19 +338,19 @@ namespace {
 
 		glutPostRedisplay();
 
-		glutTimerFunc(t, &timerFunc, t);
+		glutTimerFunc(t, timerFunc, t);
 	}
 
 
 
 }
 
-int main( int argc, char* argv[] )
+int main(int argc, char* argv[])
 {
-	if( argc < 2 )
+	if (argc < 2)
 	{
-		cout << "Usage: " << argv[ 0 ] << " PREFIX" << endl;
-		cout <<  "Please input a .bhv file to load" << endl;
+		cout << "Usage: " << argv[0] << " PREFIX" << endl;
+		cout << "Please input a .bhv file to load" << endl;
 		return -1;
 	}
 
@@ -344,11 +372,11 @@ int main( int argc, char* argv[] )
 
 	// Initialize OpenGL parameters.
 	initRendering();
-    particleSystem.initParticles_sys(bvh);
+	particleSystem.initParticles_sys(bvh);
 
 	// Setup BVH
 	//initSystem(argc, argv);gv
-	bvh.load(argv[1], argv[2] , argv[3]);
+	bvh.load(argv[1], argv[2], argv[3]);
 	//bvh.loadBVH(argv[1]);
 	//bvh.loadMesh(argv[1]);
 	//bvh.loadAttachments(argv[3]);
@@ -369,12 +397,12 @@ int main( int argc, char* argv[] )
 	glutDisplayFunc(drawScene);
 
 	// Trigger timerFunc every 8.33 msec / 1 frame every 8.33ms
-	glutTimerFunc(2, timerFunc, 2);
+	glutTimerFunc(frameRate, timerFunc, frameRate);
 
 	// Start the main loop.  glutMainLoop never returns.
 	glutMainLoop();
 
-    return 0;
+	return 0;
 }
 
 

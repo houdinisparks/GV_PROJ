@@ -57,6 +57,7 @@ void BVH::load(const char* bvhfile, const char* meshfile, const char *attachfile
 	loadAttachments(attachfile);
 
 	computeBindWorldToJointTransforms(rootJoint);
+	precomputeVerticesForEachFrame();
 	printJoint(rootJoint);
 	//updateCurrentJointToWorldTransforms()//this is done in moveJoint step.;
 
@@ -110,7 +111,9 @@ void BVH::loadHierarchy(std::istream& stream)
 	//std::cout << " finish heirarchy" << std::endl;
 
 }
-
+/*
+FOR SKELETON DRAWING
+*/
 Joint* BVH::loadJoint(std::istream& stream, Joint* parent) //default value of parent == NULL
 {
 	std::cout << " loading Joint" << std::endl;
@@ -249,8 +252,6 @@ Joint* BVH::loadJoint(std::istream& stream, Joint* parent) //default value of pa
 	//std::cout << " finish Joint" << std::endl;
 
 }
-
-
 void BVH::loadMotion(std::istream& stream)
 {
 	std::string tmp;
@@ -321,10 +322,83 @@ void BVH::computeBindWorldToJointTransforms(Joint *joint) {
 		computeBindWorldToJointTransforms(child);
 	}
 }
+void BVH::drawSkeleton(bool drawSkeleton, int frame = 0) {
+	//std::cout << "drawing skeleton" << std::endl;
+
+	frame = frame % motionData.num_frames;
+
+	moveTo(frame);
+	bvhToVertices(rootJoint, skeletalVertices, skeletalIndices, 0);
+	//std::cout << "no sv " << skeletalVertices.size() << std::endl; // 30
+	//std::cout << "no si " << skeletalIndices.size() << std::endl; // 58
+	glBegin(GL_LINES);
+	for (int i = 0; i < skeletalIndices.size(); i += 2)
+	{
+		int parent_idx = skeletalIndices[i];
+		int child_idx = skeletalIndices[i + 1];
+
+		Vector3f parent = skeletalVertices[parent_idx].xyz();
+		Vector3f child = skeletalVertices[child_idx].xyz();
+		//std::cout << "parent: " ; parent.print();
+		//std::cout << "child: "; child.print();
+
+		glLineWidth(2.0f);
+		glVertex3f(parent.x(), parent.y(), parent.z());
+		glVertex3f(child.x(), child.y(), child.z());
+
+	}
+	glEnd();
+	skeletalVertices.clear();
+	skeletalIndices.clear();
+}
+int currentCompletion = -1;
+void BVH::precomputeVerticesForEachFrame() {
+	klog.l("Animation") << "Loading Animation...";
+	for (float frame = 0; frame < motionData.num_frames; frame++)
+	{
+		int percentComplete = (int)((frame / motionData.num_frames) * 100);
+		
+		if (percentComplete % 25 == 0 && currentCompletion != percentComplete) {
+			klog.l("Animation") << "Loading Frame: " << percentComplete << "% Complete";
+			currentCompletion = percentComplete;
+		}
+		moveTo(frame);
+		std::vector<Vector3f> verts_in_one_frame;
+
+		for (int i = 0; i < m_mesh.vecv.size(); i++) //[vecv1 , vecv2 , vecv3 , ...]
+		{
+			Vector4f bind_vertex(m_mesh.vecv[i], 1.0f); //static
+			Vector4f updated_vertex(0.0f);
+			//klog.l("Mesh") << "1";
+			//world --> joint transforms
+			for (int j = 0; j < m_mesh.attachments[i].size(); j += 2) //[ vecv1:[jtidx1,wght1, jtidx2,wght2
+			{
+				//wT1B1-1p
+				int jt_idx = m_mesh.attachments[i][j];
+
+				float jt_weights = m_mesh.attachments[i][j + 1];
+
+				Vector4f update_vertex = jt_weights *
+					(m_joints[jt_idx]->transform *
+						m_joints[jt_idx]->bindWorldToJointTransform * bind_vertex);
+				//klog.l("weights") << jt_idx << " " << jt_weights;
+				updated_vertex = updated_vertex + update_vertex;
+				//klog.l("Mesh") << "4";
+			}
+	
+			verts_in_one_frame.push_back(updated_vertex.xyz());
+			//m_mesh.currentVertices[i] = updated_vertex.xyz();
+		}
+		
+		m_mesh_vertices_all_frames.push_back(verts_in_one_frame);
+	}
+
+	klog.l("Animation") << "Loading Animation...Finished";
+}
 
 /**
 Calculates Joint's local transformation matrix for
-specified frame starting index
+specified frame starting index; frame starts from 0.
 */
 void BVH::moveJoint(Joint* joint, MOTION* motionData, int frame_starts_index)
 {
@@ -335,11 +409,6 @@ void BVH::moveJoint(Joint* joint, MOTION* motionData, int frame_starts_index)
 	joint->transform = Matrix4f::translation(joint->offset.x,
 		joint->offset.y,
 		joint->offset.z );
-
-	//std::cout << joint->offset.x << " " << joint->offset.y << " " <<
-	//	joint->offset.z << std::endl;
-
-
 
 	// here we transform joint's local matrix with each specified channel's values
 	// which are read from motion data
@@ -392,67 +461,6 @@ void BVH::moveJoint(Joint* joint, MOTION* motionData, int frame_starts_index)
 	}
 }
 
-void BVH::moveJoint_Mesh(Joint* joint, MOTION* motionData, int frame_starts_index) {
-
-	// we'll need index of motion data's array with start of this specific joint
-	int start_index = frame_starts_index + joint->channel_start;
-
-	// translate indetity matrix to this joint's offset parameters w.r.t parents
-	joint->transform = Matrix4f::translation(joint->offset.x,
-		joint->offset.y,
-		joint->offset.z);
-
-
-	// here we transform joint's local matrix with each specified channel's values
-	// which are read from motion data
-	for (int i = 0; i < joint->num_channels; i++)
-	{
-		// channel alias
-		const short& channel = joint->channels_order[i];
-
-		// extract value from motion data, each frame with respect to bind frame
-		//joint-> transforms are from local coordinates, to world coordinates
-		float value = motionData->data[start_index + i];
-
-		if (channel & Xposition)
-		{
-			joint->transform = joint->transform * Matrix4f::translation(Vector3f(value, 0, 0));
-		}
-		if (channel & Yposition)
-		{
-			joint->transform = joint->transform * Matrix4f::translation(Vector3f(0, value, 0));
-		}
-		if (channel & Zposition)
-		{
-			joint->transform = joint->transform * Matrix4f::translation(Vector3f(0, 0, value));
-		}
-
-		if (channel & Xrotation)
-		{
-			joint->transform = joint->transform * Matrix4f::rotateX(convertToRadians(value));
-		}
-		if (channel & Yrotation)
-		{
-			joint->transform = joint->transform * Matrix4f::rotateY(convertToRadians(value));
-		}
-		if (channel & Zrotation)
-		{
-			joint->transform = joint->transform * Matrix4f::rotateZ(convertToRadians(value));
-		}
-	}
-
-	// then we apply parent's local transfomation matrix to this joint's LTM (local tr. mtx. :)
-	if (joint->parent != NULL) {
-		joint->transform = joint->parent->transform * joint->transform;
-	}
-
-	// when we have calculated parent's matrix do the same to all children
-	for (auto& child : joint->children) {
-		moveJoint(child, motionData, frame_starts_index);
-	}
-
-	//joint->transform is from local to world coordinates!
-}
 
 void BVH::moveTo(unsigned frame)
 {
@@ -465,82 +473,22 @@ void BVH::moveTo(unsigned frame)
 
 }
 
-void BVH::moveTo_Mesh(unsigned frame) {
-	// we calculate motion data's array start index for a frame
-	unsigned start_index = frame * motionData.num_motion_channels;
-
-
-}
-
 //for drawing the skeleton
-void BVH::drawSkeleton(bool drawSkeleton, int frame = 0) {
-	//std::cout << "drawing skeleton" << std::endl;
-
-	frame = frame % motionData.num_frames;
-
-	moveTo(frame);
-	bvhToVertices(rootJoint, skeletalVertices, skeletalIndices,0);
-	//std::cout << "no sv " << skeletalVertices.size() << std::endl; // 30
-	//std::cout << "no si " << skeletalIndices.size() << std::endl; // 58
-	glBegin(GL_LINES);
-	for (int i = 0; i < skeletalIndices.size(); i += 2)
-	{
-		int parent_idx = skeletalIndices[i];
-		int child_idx = skeletalIndices[i + 1];
-
-		Vector3f parent = skeletalVertices[parent_idx].xyz();
-		Vector3f child = skeletalVertices[child_idx].xyz();
-		//std::cout << "parent: " ; parent.print();
-		//std::cout << "child: "; child.print();
-
-		glLineWidth(2.0f);
-		glVertex3f(parent.x(), parent.y(), parent.z());
-		glVertex3f(child.x(), child.y(),  child.z());
-
-	}
-	glEnd();
-	skeletalVertices.clear();
-	skeletalIndices.clear();
-}
 
 //for drawing the mesh
-void BVH::updateMesh() {
-	//klog.l("Mesh") << "updating mesh";
-	for (int i = 0; i < m_mesh.vecv.size(); i++) //[vecv1 , vecv2 , vecv3 , ...]
-	{
-		Vector4f bind_vertex(m_mesh.vecv[i], 1.0f); //static
-		Vector4f updated_vertex(0.0f);
-		//klog.l("Mesh") << "1";
-		//world --> joint transforms
-		for (int j = 0; j < m_mesh.attachments[i].size(); j += 2) //[ vecv1:[jtidx1,wght1, jtidx2,wght2
-		{
-			//wT1B1-1p
-			int jt_idx = m_mesh.attachments[i][j];
-			
-			float jt_weights = m_mesh.attachments[i][j + 1];
-			
-			Vector4f update_vertex = jt_weights *
-				(m_joints[jt_idx]->transform *
-					m_joints[jt_idx]->bindWorldToJointTransform * bind_vertex);
-			//klog.l("weights") << jt_idx << " " << jt_weights;
-			updated_vertex = updated_vertex + update_vertex;
-			//klog.l("Mesh") << "4";
-		}
+void BVH::updateMesh(int frame) {
 
-		m_mesh.currentVertices[i] = updated_vertex.xyz();
-	}
+	//klog.l("Mesh") << "updating mesh";
+	frame = frame % motionData.num_frames;
+	m_mesh.currentVertices = m_mesh_vertices_all_frames[frame];
+	
 
 }
 
 void BVH::drawMesh(bool drawMesh, int frame = 0) {
 	frame = frame % motionData.num_frames;
-	moveTo(frame); //updates the joint -> world transformations of all joints
 
-	//moveTo_Mesh(frame) //updates current vertices of mesh
-
-	updateMesh();
-
-
+	updateMesh(frame);
 	m_mesh.draw();
 
 	//some function to update the vertices
